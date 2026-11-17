@@ -44,7 +44,7 @@ extension, remote-debugging port or automatic tab manipulation is installed.
 ## Font is not in Omarchy's font picker
 
 That picker lists monospace fonts. Shantell Sans is proportional. `--fonts` makes
-it available to applications; set `bar.stark.fontFamily` separately for the island.
+it available and automatically sets `bar.stark.fontFamily` when the island is selected.
 Run `fc-match 'Shantell Sans'` to check discovery. Restart applications that cached
 the old font list. No terminal font is changed.
 
@@ -53,3 +53,38 @@ the old font list. No terminal font is changed.
 Run `./install.sh --recover --dry-run`, review the reported journal, then use
 `./install.sh --recover` if appropriate. Unexpected files are retained. Keep backups
 until recovery is understood. See [UNINSTALL.md](UNINSTALL.md) for conflicts.
+
+## Bootstrap refuses to install
+
+Release mode requires a full reviewed commit SHA with `--commit`, matching the
+selected `--ref` tag. A missing tag, failed clone, or mismatched SHA stops before
+installer execution. No GitHub login is needed for this public repository.
+`--dev-branch main` explicitly opts into unverified development. Do not bypass a
+release mismatch; verify the release metadata independently.
+
+## Wizard or selective removal
+
+`--interactive` requires a real terminal. Use `--components` for automation.
+Selective uninstall is rejected because current receipts have combined layout
+changes; disable plugins natively or perform a reviewed full uninstall/reinstall.
+
+## Installation finished but nothing looks different
+
+- Minimal installs only the visualizer. It hides while locked, paused, or without a
+  playing MPRIS player. Start media and check `omarchy-shell stark.visualizer status`.
+- For the island use `./install.sh --mode standard --fonts --dry-run`, then install
+  that profile after reviewing the plan. Fonts alone do not select the island.
+- Previously managed disabled plugins stay disabled. `--reactivate` is explicit
+  consent to enable them again. Other layout edits still trigger conflicts.
+- `--no-reload` intentionally defers runtime activation. Restart the native shell
+  manually after reviewing the files; do not launch a second Quickshell process.
+- `omarchy plugin list` checks configured enabled state, not proof of rendering.
+  Review Quickshell logs for failed QML imports/entry points.
+
+## Missing dependencies
+
+Run with `--install-deps` to review the precise package operation. Noninteractive
+package permission requires `--install-deps --yes`. Refusing package installation
+leaves desktop configuration unchanged. A failed pacman operation can still have
+system-level effects; Stark does not remove packages on uninstall. Never use sudo
+to run the entire installer or bypass a version/source mismatch.

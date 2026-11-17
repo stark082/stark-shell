@@ -19,6 +19,14 @@ import time
 REPO = Path(__file__).resolve().parents[1]
 SECTIONS = ('left', 'centerBegin', 'center', 'centerEnd', 'right', 'tray')
 MISSING = {'__stark_missing__': True}
+PROFILES = {
+    'minimal': ['visualizer'],
+    'standard': ['island', 'launcher', 'calendar', 'visualizer'],
+}
+PACKAGES = {'python3': 'python', 'jq': 'jq', 'patch': 'patch',
+            'quickshell': 'quickshell', 'hyprctl': 'hyprland',
+            'fc-cache': 'fontconfig', 'fc-match': 'fontconfig'}
+FONT = 'Shantell Sans'
 
 
 class Error(RuntimeError):
@@ -30,8 +38,7 @@ def digest(data):
 
 
 def read(path):
-    if path.is_symlink():
-        raise Error(f'Refusing symlink target: {path}')
+    guard_destination(path)
     return path.read_bytes() if path.exists() else None
 
 
@@ -175,6 +182,8 @@ class Transaction:
         expected = self.journal['files'][str(path)]['expected']
         if (digest(previous) if previous is not None else None) != expected:
             raise Error(f'Concurrent edit detected: {path}')
+        self.journal['files'][str(path)]['intended'] = digest(data) if data is not None else None
+        self.flush()
         if data is None:
             path.unlink(missing_ok=True)
         else:
@@ -190,7 +199,7 @@ class Transaction:
         for name, record in reversed(list(self.journal['files'].items())):
             path = Path(name)
             current = read(path)
-            if (digest(current) if current is not None else None) != record['expected']:
+            if (digest(current) if current is not None else None) not in (record['expected'], record.get('intended', record['expected'])):
                 conflicts.append(name)
                 continue
             if record['before'] is None:
@@ -217,6 +226,77 @@ class Manager:
         self.shell = self.config / 'omarchy/shell.json'
         self.omarchy = Path(os.environ.get('OMARCHY_PATH', '/usr/share/omarchy'))
 
+    def dependencies(self, args):
+        required = ['python3', 'omarchy', 'omarchy-shell', 'quickshell', 'hyprctl', 'jq', 'patch']
+        if args.fonts:
+            required += ['fc-cache', 'fc-match']
+        missing = [name for name in required if not shutil.which(name)]
+        if not missing:
+            print('Required dependencies: available')
+            return True
+        print('Missing commands:', ', '.join(missing))
+        if any(name not in PACKAGES for name in missing):
+            raise Error('Omarchy itself is missing or incomplete. Install/repair supported Omarchy first; '
+                        'Stark cannot install a desktop distribution for you.')
+        # Package installation must not repair an unrelated Linux distribution.
+        if not shutil.which('pacman') or not shutil.which('omarchy'):
+            raise Error('Automatic dependency installation requires an existing Arch/Omarchy system.')
+        version = run(['omarchy', 'version']).stdout.strip()
+        if not re.fullmatch(r'4\.5\.\d+(?:-\d+)?', version):
+            raise Error(f'Unsupported Omarchy {version!r}; no dependency packages installed. Supported: 4.5.x.')
+        packages = sorted({PACKAGES[name] for name in missing})
+        command = ['sudo', 'pacman', '-S', '--needed', *packages]
+        print('Required package operation:', ' '.join(command))
+        print('Only this package command uses sudo. Package changes cannot be rolled back by Stark uninstall.')
+        if args.dry_run:
+            print('Dry run: packages will not be installed. Full build validation needs these dependencies.')
+            return False
+        if not (getattr(args, 'install_deps', False) or getattr(args, 'interactive', False)):
+            raise Error('Missing prerequisites. Re-run with --install-deps to review/install the packages above, '
+                        'or install them yourself. Automation requires --install-deps --yes.')
+        if getattr(args, 'yes', False) and not getattr(args, 'install_deps', False):
+            raise Error('Automatic package consent requires --install-deps --yes, even with the wizard.')
+        if not getattr(args, 'yes', False):
+            if not sys.stdin.isatty():
+                raise Error('Package installation needs permission: use --install-deps --yes for automation.')
+            if input('Install exactly these packages using sudo pacman? [y/N] ').strip().lower() != 'y':
+                raise Error('Package installation declined; no desktop configuration changed.')
+        if not shutil.which('sudo'):
+            raise Error('sudo is unavailable. Install the listed prerequisites using your administrator account.')
+        # Inherit terminal I/O so sudo and pacman can explain failures and ask for a password.
+        if getattr(args, 'yes', False):
+            command.insert(4, '--noconfirm')
+        result = subprocess.run(command, check=False)
+        if result.returncode:
+            raise Error(f'Package installation failed (exit {result.returncode}). '
+                        'No Stark desktop files changed. Read pacman output; do not run Stark as root.')
+        remaining = [name for name in required if not shutil.which(name)]
+        if remaining:
+            raise Error('Still missing after package installation: ' + ', '.join(remaining))
+        return True
+
+    def font_available(self):
+        if not shutil.which('fc-match'):
+            return False
+        result = run(['fc-match', '-f', '%{family}\n', FONT])
+        return any(family.strip().casefold() == FONT.casefold()
+                   for family in result.stdout.replace('\n', ',').split(','))
+
+    def selected_names(self, args, previous):
+        mode = getattr(args, 'mode', None)
+        if mode == 'custom' and not args.components:
+            raise Error('--mode custom requires --components, for example island,launcher,calendar,visualizer.')
+        if mode and mode != 'custom' and args.components is not None:
+            raise Error('Choose either --mode or --components; use --mode custom with an explicit component list.')
+        if mode == 'complete':
+            requested = list(self.lock['components'])
+        elif mode in PROFILES:
+            requested = PROFILES[mode]
+        else:
+            requested = args.components.split(',') if args.components is not None else (
+                list(previous.get('components', {})) if previous else ['visualizer'])
+        return self.select(list(previous.get('components', {})) + list(requested))
+
     def environment(self):
         if sys.version_info < (3, 10):
             raise Error('Python 3.10 or newer is required.')
@@ -231,7 +311,7 @@ class Manager:
                     'hyprland': r'Hyprland 0\.56\.\d+\b'}
         for name, pattern in patterns.items():
             if not re.search(pattern, versions[name]):
-                raise Error(f'Unsupported {name}: {versions[name].splitlines()[0]}. '
+                raise Error(f'Unsupported {name}: {(versions[name].splitlines() or ["empty version response"])[0]}. '
                             'This release supports Omarchy 4.5.x, Quickshell 0.3.2 and Hyprland 0.56.x only. See docs/UPDATING.md.')
         for relative, token in {
             'shell/Ui/BarWidget.qml': 'function setting',
@@ -242,21 +322,27 @@ class Manager:
             if not path.is_file() or token not in path.read_text():
                 raise Error(f'Missing required Omarchy interface: {path} ({token}). See docs/UPDATING.md.')
         run(['omarchy', 'plugin', 'validate', '--help'])
-        optional = {name: bool(shutil.which(name)) for name in ['cava', 'fc-cache', 'node', 'shellcheck']}
+        optional = {name: bool(shutil.which(name)) for name in ['cava', 'fc-cache', 'fc-match', 'node', 'shellcheck']}
         print('Versions:', '; '.join(f'{k}={v.splitlines()[0]}' for k, v in versions.items()))
         if not optional['cava']:
-            print('Optional CAVA missing: visualizer will use PipeWire peak fallback. No packages will be installed.')
+            print('Optional CAVA missing: visualizer will use PipeWire peak fallback (not a frequency spectrum).')
         return {'versions': versions, 'optional': optional}
 
     def select(self, names):
         selected = []
+        visiting = set()
         def add(name):
+            name = name.strip()
+            if name in visiting:
+                raise Error(f'Component dependency cycle: {name}')
+            visiting.add(name)
             if name not in self.lock['components']:
                 raise Error(f'Unknown component: {name}')
             for dependency in self.lock['components'][name]['dependencies']:
                 add(dependency)
             if name not in selected:
                 selected.append(name)
+            visiting.remove(name)
         for name in names:
             add(name)
         return selected
@@ -315,6 +401,8 @@ class Manager:
         paths = sorted(before.keys() | after.keys())
         for relative in paths:
             txn.capture(target / relative)
+            txn.journal['files'][str(target / relative)]['intended'] = after.get(relative)
+        txn.flush()
         target.parent.mkdir(parents=True, exist_ok=True)
         temporary = Path(tempfile.mkdtemp(prefix='.stark-stage-', dir=target.parent))
         old = temporary.with_name(temporary.name + '-old')
@@ -385,17 +473,78 @@ class Manager:
                 raise Error(f'Existing unmanaged plugin: {target}. It belongs to your prototype or another installer. '
                             'It will not be adopted or overwritten. Use a fresh account/VM or manually relocate it after backing it up.')
 
+    def wizard(self, args):
+        if not sys.stdin.isatty():
+            raise Error('--interactive requires a terminal; use --mode or --components for automation.')
+        print('Welcome to Stark Shell')
+        print('OS:', __import__('platform').platform())
+        for label, command in {'Omarchy': ['omarchy', 'version'],
+                               'Quickshell': ['quickshell', '--version'],
+                               'Hyprland': ['hyprctl', 'version']}.items():
+            if not shutil.which(command[0]):
+                print(label + ': command missing')
+                continue
+            try:
+                result = run(command, check=False)
+                print(label + ':', (result.stdout.strip().splitlines() or ['unavailable; check your desktop session'])[0])
+            except (OSError, subprocess.SubprocessError):
+                print(label + ': unavailable; strict checks will run before installation')
+        print('Compatibility target: Omarchy 4.5.x / Quickshell 0.3.2 / Hyprland 0.56.x; exact source pins apply.')
+        print('Existing managed components:', ', '.join(self.state().get('components', {})) or 'none')
+        print('1 Minimal: visualizer only (hidden while media is paused)')
+        print('2 Standard: island, launcher, calendar, visualizer')
+        print('3 Complete: all supported components')
+        print('4 Custom: select individual components')
+        print('Island/panel profiles are experimental until clean-account graphical acceptance.')
+        if not getattr(args, 'mode', None) and args.components is None:
+            choice = input('Choose [1]: ').strip() or '1'
+            modes = {'1': 'minimal', '2': 'standard', '3': 'complete', '4': 'custom'}
+            if choice not in modes:
+                raise Error('Invalid installation mode; choose 1, 2, 3 or 4.')
+            args.mode = modes[choice]
+        if getattr(args, 'mode', None) == 'custom' and args.components is None:
+            print('Available:', ', '.join(self.lock['components']))
+            args.components = input('Components (comma separated): ').strip()
+            if not args.components:
+                raise Error('Custom selection cannot be empty.')
+        self.selected_names(args, self.state())
+        args.fonts = args.fonts or input('Install/use Shantell Sans on the island? [y/N] ').strip().lower() == 'y'
+        args.animations = args.animations or input('Enable animation overrides? [y/N] ').strip().lower() == 'y'
+        print('Theme: follow current Omarchy theme; no additional presets are shipped.')
+
+    def verify_activation(self, names):
+        data = json.loads(run(['omarchy', 'plugin', 'list', '--json']).stdout)
+        found = {item['id']: item for item in data}
+        for name in names:
+            id_ = self.lock['components'][name]['id']
+            if id_ not in found or found[id_].get('enabled') is not True:
+                raise Error(f'{id_} was not enabled by Omarchy. Installation will roll back; inspect shell logs.')
+        print('Verified enabled in Omarchy configuration:', ', '.join(names) or 'no new activation requested')
+
     def install(self, args, updating=False):
-        environment = self.environment()
+        if getattr(args, 'interactive', False):
+            self.wizard(args)
         previous = self.state()
         args.animations = args.animations or previous.get('options', {}).get('animations', False)
         args.fonts = args.fonts or previous.get('options', {}).get('fonts', False)
-        names = self.select(args.components.split(',') if args.components else
-                            list(previous.get('components', {})) if previous else ['visualizer'])
-        names = self.select(list(previous.get('components', {})) + names)
+        names = self.selected_names(args, previous)
         if updating and not previous:
             raise Error('Nothing managed by Stark Shell is installed. Run install.sh first.')
         self.preflight_existing(previous, names)
+        self.ensure_no_pending()
+        initial_config = load_json(self.shell, {})
+        if not isinstance(initial_config, dict):
+            raise Error('shell.json must contain a JSON object. No desktop files changed.')
+        if args.fonts and 'island' in names:
+            bar = initial_config.get('bar', {})
+            if not isinstance(bar, dict) or not isinstance(bar.get('stark', {}), dict):
+                raise Error('bar and bar.stark must be JSON objects before applying the island font.')
+        if not self.dependencies(args):
+            print('Selected components:', ', '.join(names))
+            if args.fonts:
+                print('Font plan: detect/install Shantell Sans and set bar.stark.fontFamily when island is selected.')
+            raise Error('Preview incomplete: install the missing prerequisites and re-run --dry-run for full compatibility and plugin validation.')
+        environment = self.environment()
         print('Components:', ', '.join(names))
         print('Method: validated managed copies; stock bar retained unless island is selected.')
         resources = {}
@@ -404,15 +553,18 @@ class Manager:
             if not hypr_config.exists() or hypr_config.is_symlink():
                 raise Error('Animation module requires a regular ~/.config/hypr/hyprland.lua. Convert/adapt manually; no legacy config rewrite is performed.')
             resources[str(self.config / 'hypr/stark-shell-animations.lua')] = self.repo / 'hypr/stark-animations.lua'
+        font_present = self.font_available() if args.fonts else False
+        font_sources = {}
         if args.fonts:
-            if not environment['optional']['fc-cache']:
-                raise Error('--fonts requires fc-cache. Install fontconfig first.')
+            print('Shantell Sans:', 'already available; reuse existing font' if font_present else 'will install bundled, hash-verified fonts')
             font_lock = load_json(self.repo / 'packaging/fonts.lock.json')
             for name, expected in font_lock['files'].items():
                 source = self.repo / 'fonts/ShantellSans' / safe_relative(name)
                 if digest(source.read_bytes()) != expected:
                     raise Error(f'Font asset hash mismatch: {source}')
-                resources[str(self.home / '.local/share/fonts/stark-shell' / source.name)] = source
+                font_sources[str(self.home / '.local/share/fonts/stark-shell' / source.name)] = source
+            if not font_present or any(filename in previous.get('resources', {}) for filename in font_sources):
+                resources.update(font_sources)
         for name in resources:
             guard_destination(Path(name))
             if Path(name).exists() and name not in previous.get('resources', {}):
@@ -425,10 +577,32 @@ class Manager:
                 print(f'  {id_} -> {self.plugins / id_}')
             for target in resources:
                 print('  optional resource ->', target)
+            print('Configuration: native plugin enable merges into', self.shell)
+            apply_font = args.fonts and 'island' in names
+            if apply_font:
+                print('  set bar.stark.fontFamily = Shantell Sans (previous value backed up)')
+            elif args.fonts:
+                print('  No island selected: make font available only; native Omarchy font is unchanged.')
+            if 'island' not in names:
+                print('  Native bar retained. Visualizer appears only during MPRIS media playback while unlocked.')
+            if getattr(args, 'reactivate', False):
+                print('  Explicitly re-enable previously managed components in the selection.')
+            print('Reloads:', 'deferred (watchers remain active)' if args.no_reload else 'shell if plugins/fonts change; Hyprland if animations change')
+            self.ensure_no_pending()
+            config = load_json(self.shell, {})
+            if not isinstance(config, dict):
+                raise Error('shell.json must contain a JSON object.')
             if args.dry_run:
                 print('Dry run complete. No configuration, plugin, font, or installation-state files changed.')
                 return
-            run(['omarchy-shell', 'shell', 'ping'])
+            if getattr(args, 'interactive', False) and not getattr(args, 'yes', False) and input('Apply the operations above? [y/N] ').strip().lower() != 'y':
+                print('Cancelled; no desktop files changed.')
+                return
+            try:
+                run(['omarchy-shell', 'shell', 'ping'])
+            except (Error, subprocess.SubprocessError) as error:
+                raise Error('Cannot contact the running Omarchy shell. Run inside your logged-in Omarchy desktop; '
+                            'Stark will not start a second shell. No desktop files changed.') from error
             self.ensure_no_pending()
             before = load_json(self.shell, {})
             if not isinstance(before, dict):
@@ -441,6 +615,7 @@ class Manager:
             changed = False
             hypr_changed = False
             fonts_changed = False
+            font_setting_changed = False
             try:
                 for name, stage in staged.items():
                     id_ = self.lock['components'][name]['id']
@@ -467,19 +642,47 @@ class Manager:
                     txn.write(hypr_config, (content + block).encode())
                     state['hypr_block'] = {'path': str(hypr_config), 'text': block}
                     hypr_changed = True
+                if args.fonts:
+                    if fonts_changed:
+                        run(['fc-cache', '-f', self.home / '.local/share/fonts/stark-shell'])
+                    if not self.font_available():
+                        raise Error('Shantell Sans is not available to fontconfig after installation. Rolling back; '
+                                    'check fc-match output and fontconfig configuration.')
+                    print('Verified font: Shantell Sans')
                 if changed or not previous:
                     self.discover([self.lock['components'][name]['id'] for name in names])
+                activated = []
                 for name in names:
-                    if name in previous.get('components', {}):
+                    if name in previous.get('components', {}) and not getattr(args, 'reactivate', False):
                         continue  # preserve user placements and disabled states on repeat/update
                     id_ = self.lock['components'][name]['id']
                     command = ['omarchy', 'plugin', 'enable', id_]
                     if name == 'visualizer':
                         command += ['--section', 'centerEnd']
                     self.native(txn, command)
+                    activated.append(name)
+                self.verify_activation(activated)
+                if apply_font:
+                    font_config = load_json(self.shell, {})
+                    bar = font_config.setdefault('bar', {})
+                    if not isinstance(bar, dict) or not isinstance(bar.get('stark', {}), dict):
+                        raise Error('bar and bar.stark must be JSON objects before applying the island font.')
+                    bar.setdefault('stark', {})['fontFamily'] = FONT
+                    if font_config != load_json(self.shell, {}):
+                        txn.write(self.shell, json_bytes(font_config), state['shell_mode'])
+                        font_setting_changed = True
                 after = load_json(self.shell, {})
                 # Existing edits are kept; compose new edits against the original baseline.
                 baseline, conflicts = reverse_changes(before, state.get('shell_changes', []))
+                if conflicts and getattr(args, 'reactivate', False):
+                    # Explicit reactivation may restore a disabled widget to the receipt's
+                    # exact enabled state. Any other layout change remains a conflict.
+                    for change in state.get('shell_changes', []):
+                        path = '/' + '/'.join(change['path'])
+                        activation_path = path.startswith('/bar/layout/') or path in ('/bar/id', '/plugins', '/disabledPlugins')
+                        if activation_path and path in conflicts and get_at(after, change['path']) == change['after']:
+                            set_at(baseline, change['path'], change['before'])
+                            conflicts.remove(path)
                 if conflicts and before != after:
                     raise Error('Previously managed configuration was edited: ' + ', '.join(conflicts))
                 if before != after or not previous:
@@ -491,16 +694,27 @@ class Manager:
                 state['environment'] = environment
                 state['last_transaction'] = str(txn.directory)
                 if not args.no_reload:
-                    if fonts_changed:
-                        run(['fc-cache', '-f', self.home / '.local/share/fonts/stark-shell'])
-                    self.reload(shell=changed or fonts_changed, hypr=hypr_changed)
+                    self.reload(shell=changed or fonts_changed or font_setting_changed, hypr=hypr_changed)
+                    if activated:
+                        run(['omarchy-shell', 'shell', 'ping'])
+                        self.verify_activation(activated)
                 txn.write(self.state_path, json_bytes(state))
                 txn.finish()
                 print('Stark Shell installed. Receipt:', self.state_path)
+                print('Backups:', txn.directory)
+                if args.no_reload:
+                    print('Reload deferred: code may not be active yet; restart the Omarchy shell manually.')
+                if previous and not getattr(args, 'reactivate', False):
+                    print('Previously disabled components stay disabled. Use --reactivate to explicitly enable them.')
+                print('Check enabled plugins: omarchy plugin list')
+                if 'visualizer' in names:
+                    print('Visualizer hides without playing media. Check: omarchy-shell stark.visualizer status')
             except BaseException:
                 conflicts = txn.rollback()
                 # Empty staging-owned directories must not obstruct a retry.
                 self.prune_directories(names)
+                if fonts_changed:
+                    run(['fc-cache', '-f', self.home / '.local/share/fonts'], check=False)
                 if not args.no_reload:
                     run(['omarchy-shell', 'shell', 'rescanPlugins'], check=False)
                     if args.animations:
@@ -601,10 +815,15 @@ class Manager:
 def parser():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('action', choices=['install', 'update', 'uninstall', 'doctor', 'build'])
+    p.add_argument('--mode', choices=['minimal', 'standard', 'complete', 'custom'], help='Installation profile; default minimal on first install')
+    p.add_argument('--install-deps', action='store_true', help='Offer missing Arch prerequisites via sudo pacman only')
+    p.add_argument('--yes', action='store_true', help='Approve displayed wizard/package operations for automation; packages also require --install-deps')
+    p.add_argument('--reactivate', action='store_true', help='Explicitly enable previously managed components again')
+    p.add_argument('--interactive', action='store_true', help='Optional terminal installation wizard')
     p.add_argument('--components', help='Comma-separated components; default: visualizer, or current installation')
     p.add_argument('--dry-run', action='store_true', help='Validate and preview without changing desktop files')
     p.add_argument('--animations', action='store_true', help='Opt into isolated Hyprland Lua animation overrides')
-    p.add_argument('--fonts', action='store_true', help='Install bundled Shantell Sans fonts; does not change terminal fonts')
+    p.add_argument('--fonts', action='store_true', help='Install/reuse Shantell Sans and apply to selected island; preserve other settings')
     p.add_argument('--no-reload', action='store_true', help='Defer shell/Hyprland reloads; restart manually afterward')
     p.add_argument('--keep-config', action='store_true', help='Uninstall only after manually removing owned plugin references')
     p.add_argument('--recover', action='store_true', help='Recover an interrupted transaction conservatively')
@@ -614,6 +833,20 @@ def parser():
 
 def main():
     args = parser().parse_args()
+    if args.action not in ('install', 'update') and (args.interactive or args.fonts or args.animations or args.mode or args.install_deps or args.yes or args.reactivate):
+        parser().error('installation modes, dependencies, reactivation, wizard, fonts and animations apply only to install/update')
+    if args.components is not None and args.action not in ('install', 'update', 'build'):
+        parser().error('--components applies only to install/update/build; selective removal is not yet supported')
+    if args.keep_config and args.action != 'uninstall':
+        parser().error('--keep-config requires uninstall')
+    if args.output and args.action != 'build':
+        parser().error('--output requires build')
+    if args.recover and args.action not in ('install', 'update', 'uninstall'):
+        parser().error('--recover requires install/update/uninstall')
+    if args.yes and not (args.install_deps or args.interactive):
+        parser().error('--yes requires --install-deps or --interactive')
+    if os.geteuid() == 0 and args.action in ('install', 'update', 'uninstall'):
+        raise Error('Do not run Stark Shell as root or with sudo. Run ./install.sh as your normal desktop user; only dependency installation uses sudo.')
     manager = Manager()
     def interrupted(signum, _frame):
         raise Error(f'Interrupted by signal {signum}; rolling back.')
@@ -637,6 +870,7 @@ def main():
         else:
             manager.install(args, updating=args.action == 'update')
         return
+    guard_destination(manager.state_dir / '.lock')
     manager.state_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
     with (manager.state_dir / '.lock').open('a') as lock:
         try:
@@ -654,6 +888,6 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except (Error, OSError, ValueError, subprocess.SubprocessError) as error:
+    except (Error, OSError, ValueError, EOFError, subprocess.SubprocessError) as error:
         print('stark-shell:', error, file=sys.stderr)
         sys.exit(1)

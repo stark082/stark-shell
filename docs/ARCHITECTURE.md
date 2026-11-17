@@ -93,3 +93,27 @@ lock its own operations, not the graphical editor. It checks observed state befo
 native mutations, but it cannot attribute an edit made during an external native
 command to its author. Backups and conflict checks reduce this narrow race; they
 are not a distributed configuration lock.
+
+## Candidate hardening
+
+File writes journal both the observed image and intended replacement hash before
+mutation, so recovery can recognize a crash before observation. Directory swap
+and external native-command interruption windows still need conservative manual
+review. Bootstrap checks an independently supplied release commit before running
+installer code, uses temporary clones, and never updates the active source tree.
+
+## Local setup and fonts
+
+install.sh remains the single local entry point. It refuses root, can offer the
+Python prerequisite when absent, and opens the wizard only for no-argument terminal
+use. The Python manager handles named profiles, exact component dependencies and
+consented package installation. Only static mapped prerequisite names are passed
+to sudo pacman, with inherited terminal I/O. Packages are outside the desktop
+transaction; no system package is removed on uninstall.
+
+Fonts are exact-family checked through fontconfig. Existing Shantell Sans is
+reused without ownership; otherwise verified bundled files are transactionally
+installed and the cache refreshed. bar.stark.fontFamily is merged into shell.json
+and included in its reversible semantic diff. A font-setting change restarts the
+native shell unless reload is explicitly deferred. Native plugin enable remains
+the activation mechanism; enabled state is checked before and after restart.

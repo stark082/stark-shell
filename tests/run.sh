@@ -2,9 +2,9 @@
 set -euo pipefail
 STARK_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$STARK_ROOT"
-bash -n install.sh uninstall.sh update.sh tests/run.sh
+bash -n bootstrap.sh install.sh uninstall.sh update.sh tests/run.sh
 if command -v shellcheck >/dev/null; then
-  shellcheck install.sh uninstall.sh update.sh tests/run.sh overlays/stark.system-monitor/discover-sensors.sh
+  shellcheck bootstrap.sh install.sh uninstall.sh update.sh tests/run.sh overlays/stark.system-monitor/discover-sensors.sh
 else
   printf '%s\n' 'ShellCheck not installed; Bash syntax checks ran. CI requires ShellCheck.'
 fi

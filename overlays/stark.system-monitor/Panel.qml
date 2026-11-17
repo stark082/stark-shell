@@ -648,6 +648,7 @@ Panel {
 
             iconComponent: Component {
               Text {
+                textFormat: Text.PlainText
                 text: root.heroGlyph
                 color: root.foreground
                 font.family: root.fontFamily
@@ -1054,6 +1055,7 @@ Panel {
               // The scale is pinned at 100%, so say so — otherwise an idle
               // machine just looks like an empty box.
               Text {
+                textFormat: Text.PlainText
                 anchors.left: parent.left
                 anchors.top: parent.top
                 text: "100%"
@@ -1124,6 +1126,7 @@ Panel {
                   }
 
                   Text {
+                    textFormat: Text.PlainText
                     anchors.centerIn: parent
                     visible: coreStrip.showValues
                     text: root.percent(coreCell.modelData.percent)
@@ -1280,6 +1283,7 @@ Panel {
     }
 
     Text {
+      textFormat: Text.PlainText
       id: valueText
       text: value
       visible: text !== ""
@@ -1339,6 +1343,7 @@ Panel {
       spacing: Style.space(2)
 
       Text {
+        textFormat: Text.PlainText
         text: tile.title
         color: root.muted
         font.family: root.fontFamily
@@ -1348,6 +1353,7 @@ Panel {
       }
 
       Text {
+        textFormat: Text.PlainText
         text: tile.value
         color: tile.alarming ? root.urgent : root.foreground
         font.family: root.fontFamily
@@ -1356,6 +1362,7 @@ Panel {
       }
 
       Text {
+        textFormat: Text.PlainText
         width: parent.width
         text: tile.detail
         color: root.muted
@@ -1389,6 +1396,7 @@ Panel {
     }
 
     Text {
+      textFormat: Text.PlainText
       text: parent.label
       color: root.muted
       font.family: root.fontFamily
@@ -1460,6 +1468,7 @@ Panel {
     spacing: Style.space(4)
 
     Text {
+      textFormat: Text.PlainText
       text: rate.glyph
       color: rate.glyphColor
       font.family: root.fontFamily
@@ -1468,6 +1477,7 @@ Panel {
     }
 
     Text {
+      textFormat: Text.PlainText
       text: root.formatRate(rate.value)
       color: root.foreground
       font.family: root.fontFamily
@@ -1506,6 +1516,7 @@ Panel {
       }
 
       Text {
+        textFormat: Text.PlainText
         id: sensorValue
         text: sensorRow.value
         color: root.muted
@@ -1604,6 +1615,7 @@ Panel {
       }
 
       Text {
+        textFormat: Text.PlainText
         id: capacityValue
         text: capacity.value
         color: root.muted

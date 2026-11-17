@@ -33,7 +33,7 @@
         },
         "Visualizer.qml": {
           "overlay": "overlays/stark.visualizer/Visualizer.qml",
-          "sha256": "ce73b018ec8f9c4962fe2d79510f74c6e2f118a958db549f52cc70a8151b6ccf",
+          "sha256": "1753a2c75af9e52e6839aadddfab1b02f768d0dbfe01c27afe43cd64398318bf",
           "executable": false
         },
         "manifest.json": {
@@ -1137,7 +1137,7 @@
         },
         "Panel.qml": {
           "overlay": "overlays/stark.system-monitor/Panel.qml",
-          "sha256": "bf3c90e96f017f059bc18193615a780b08cbfbcc48bbd2e6a2256daf74d53c7a",
+          "sha256": "7187cafb85d2858efa168fef8a9dc016794a41a09bea16c44a4eec50ddee05b3",
           "executable": false
         },
         "Sparkline.qml": {

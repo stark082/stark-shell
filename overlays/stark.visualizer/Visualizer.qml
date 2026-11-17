@@ -24,10 +24,10 @@ Singleton {
         id: cava
         running: root.usingCava
         command: ["sh", "-c",
-            'command -v cava >/dev/null || exit 127; f="${XDG_RUNTIME_DIR:-/tmp}/stark-shell-cava.conf"; '
+            "command -v cava >/dev/null || exit 127; umask 077; f=$(mktemp \"${XDG_RUNTIME_DIR:-/tmp}/stark-shell-cava.XXXXXXXX\") || exit 1; trap 'rm -f -- \"$f\"' EXIT; trap 'exit 143' TERM; trap 'exit 130' INT; "
             + `printf '%s\\n' '[general]' 'bars = ${root.count}' 'framerate = 40' 'sensitivity = 90' `
             + `'[output]' 'method = raw' 'raw_target = /dev/stdout' 'data_format = ascii' 'ascii_max_range = 100' `
-            + `'bar_delimiter = 59' 'frame_delimiter = 10' '[smoothing]' 'noise_reduction = 70' > "$f"; exec cava -p "$f"`]
+            + `'bar_delimiter = 59' 'frame_delimiter = 10' '[smoothing]' 'noise_reduction = 70' > "$f"; cava -p "$f"`]
         stdout: SplitParser {
             onRead: line => root.bars = line.split(";").filter(s => s !== "").map(v => Math.min(1, Number(v) / 100))
         }

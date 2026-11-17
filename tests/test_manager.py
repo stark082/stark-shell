@@ -27,12 +27,16 @@ def read(): return json.loads(config.read_text()) if config.exists() else {}
 def write(value):
  config.parent.mkdir(parents=True,exist_ok=True);temp=config.with_suffix('.new');temp.write_text(json.dumps(value,indent=2)+'\n');temp.replace(config)
 if name=='fc-cache': print('ok')
+elif name=='fc-match':
+ print('Shantell Sans,Shantell Sans Light' if not os.environ.get('MOCK_FONT_FAIL') and (os.environ.get('MOCK_FONT_INSTALLED') or (home/'.local/share/fonts/stark-shell/Test.ttf').exists()) else 'DejaVu Sans')
 elif name=='quickshell': print('Quickshell 0.3.2')
 elif name=='hyprctl':
  if a==['version']: print('Hyprland '+os.environ.get('MOCK_HYPR_VERSION','0.56.2'))
  elif a==['configerrors']: print(os.environ.get('MOCK_HYPR_ERRORS',''))
  else: print('ok')
-elif name=='omarchy-shell': print('ok')
+elif name=='omarchy-shell':
+ if os.environ.get('MOCK_FAIL_PING') and a==['shell','ping']: sys.exit(1)
+ print('ok')
 elif a==['version']: print(os.environ.get('MOCK_OMARCHY_VERSION','4.5.0-3'))
 elif a[:2]==['restart','shell']:
  marker=home/'reload-failed'
@@ -44,7 +48,9 @@ elif a[:2]==['plugin','validate']:
   assert m['schemaVersion']==1 and not m['id'].startswith('omarchy.')
   assert all((p/value).is_file() for value in m['entryPoints'].values())
 elif a[:3]==['plugin','list','--json']:
- print(json.dumps([json.loads(p.read_text()) for p in (home/'.config/omarchy/plugins').glob('*/manifest.json')]))
+ items=[json.loads(p.read_text()) for p in (home/'.config/omarchy/plugins').glob('*/manifest.json')]
+ for item in items: item['enabled']=item['id'] in json.dumps(read()) and item['id'] != os.environ.get('MOCK_INACTIVE')
+ print(json.dumps(items))
 elif a[:2]==['plugin','enable']:
  id=a[2]
  if os.environ.get('MOCK_FAIL_ENABLE')==id: sys.exit(1)
@@ -67,7 +73,7 @@ else: sys.exit('Unexpected mocked command: '+str([name]+a))
 
 class ManagerTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix='stark-test-')
+        self.temp = tempfile.TemporaryDirectory(prefix='stark test & $-')
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         self.home = self.root / 'home'
@@ -84,7 +90,7 @@ class ManagerTests(unittest.TestCase):
             p.write_text(token)
         self.bin = self.root / 'bin'
         self.bin.mkdir()
-        for command in ['omarchy', 'omarchy-shell', 'quickshell', 'hyprctl', 'fc-cache']:
+        for command in ['omarchy', 'omarchy-shell', 'quickshell', 'hyprctl', 'fc-cache', 'fc-match']:
             script = self.bin / command
             script.write_text(MOCK)
             script.chmod(0o755)
@@ -100,7 +106,8 @@ class ManagerTests(unittest.TestCase):
         for component, id_, kind, source, deps in [
             ('visualizer','stark.visualizer','bar-widget',None,[]),
             ('island','stark.bar','bar','omarchy.bar',[]),
-            ('launcher','stark.menu','bar-widget','omarchy.menu',['island'])]:
+            ('launcher','stark.menu','bar-widget','omarchy.menu',['island']),
+            ('calendar','stark.clock','bar-widget','omarchy.clock',['island'])]:
             directory=self.repo/'plugins'/id_;directory.mkdir(parents=True)
             manifest={'schemaVersion':1,'id':id_,'name':id_,'version':'0.1.0','kinds':[kind],
                       'entryPoints':{'bar' if kind=='bar' else 'barWidget':'Main.qml'}}
@@ -131,7 +138,7 @@ class ManagerTests(unittest.TestCase):
         (self.repo/'packaging/upstreams.lock.json').write_bytes(stark.json_bytes(self.plan))
 
     def args(self, **changes):
-        values=dict(components=None,dry_run=False,animations=False,fonts=False,no_reload=False,keep_config=False)
+        values=dict(components=None,dry_run=False,animations=False,fonts=False,no_reload=False,keep_config=False,mode=None,interactive=False,install_deps=False,yes=False,reactivate=False)
         values.update(changes)
         return argparse.Namespace(**values)
 
@@ -140,6 +147,11 @@ class ManagerTests(unittest.TestCase):
 
     def uninstall(self, **changes):
         self.manager.uninstall(self.args(**changes))
+
+    def dependencies(self, args):
+        version = stark.subprocess.CompletedProcess([], 0, stdout='4.5.0-3', stderr='')
+        with patch.object(stark, 'run', return_value=version):
+            return self.manager.dependencies(args)
 
     def test_fresh_install_keeps_stock_bar(self):
         self.install()
@@ -325,6 +337,223 @@ class ManagerTests(unittest.TestCase):
         with self.assertRaises(stark.Error): self.install()
         self.assertEqual(self.config.read_text(),'[]')
         self.assertFalse((self.manager.state_dir/'transactions').exists())
+
+    def test_dependency_cycle_is_actionable(self):
+        self.manager.lock['components']['island']['dependencies'] = ['launcher']
+        with self.assertRaisesRegex(stark.Error, 'cycle'):
+            self.manager.select(['launcher'])
+
+    def test_invalid_component_refused(self):
+        with self.assertRaisesRegex(stark.Error, 'Unknown component'):
+            self.install(components='not-a-component')
+        self.assertFalse(self.manager.plugins.exists())
+
+    def test_missing_required_dependency_refused(self):
+        with patch.object(stark.shutil, 'which', return_value=None):
+            with self.assertRaisesRegex(stark.Error, 'Omarchy itself'):
+                self.install()
+
+    def test_dry_run_rejects_malformed_config(self):
+        self.config.write_text('{bad')
+        with self.assertRaises(ValueError):
+            self.install(dry_run=True)
+        self.assertFalse(self.manager.state_dir.exists())
+
+    def test_crash_after_atomic_write_before_observe_recovers(self):
+        target = self.home / 'file with spaces & dollars $'
+        target.write_bytes(b'original')
+        txn = stark.Transaction(self.manager.state_dir, 'crash')
+        with patch.object(txn, 'observe', side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                txn.write(target, b'new')
+        self.manager.recover(self.args())
+        self.assertEqual(target.read_bytes(), b'original')
+
+    def test_state_parent_symlink_refused(self):
+        target = self.root / 'outside'
+        target.mkdir()
+        self.manager.state_dir.parent.mkdir(parents=True)
+        self.manager.state_dir.symlink_to(target, target_is_directory=True)
+        with self.assertRaises(stark.Error):
+            self.install()
+        self.assertEqual(list(target.iterdir()), [])
+
+    def test_standard_profile_installs_main_components(self):
+        self.install(mode='standard')
+        self.assertEqual(set(self.manager.state()['components']), {'island', 'launcher', 'calendar', 'visualizer'})
+        self.assertEqual(stark.load_json(self.config)['bar']['id'], 'stark.bar')
+
+    def test_complete_profile_uses_manifest_components(self):
+        self.install(mode='complete')
+        self.assertEqual(set(self.manager.state()['components']), set(self.plan['components']))
+
+    def test_custom_and_conflicting_modes(self):
+        with self.assertRaisesRegex(stark.Error, 'requires --components'):
+            self.install(mode='custom')
+        with self.assertRaisesRegex(stark.Error, 'either --mode'):
+            self.install(mode='minimal', components='launcher')
+        self.install(mode='custom', components='launcher,visualizer')
+        self.assertEqual(set(self.manager.state()['components']), {'island', 'launcher', 'visualizer'})
+
+    def test_fonts_apply_and_restore_previous_family(self):
+        original = copy.deepcopy(self.original)
+        original['bar']['stark'] = {'fontFamily': 'My Font', 'minimumWidth': 250}
+        self.config.write_bytes(stark.json_bytes(original))
+        self.install(mode='standard', fonts=True)
+        config = stark.load_json(self.config)
+        self.assertEqual(config['bar']['stark'], {'fontFamily': 'Shantell Sans', 'minimumWidth': 250})
+        self.assertEqual(config['personal'], original['personal'])
+        self.uninstall()
+        self.assertEqual(stark.load_json(self.config), original)
+
+    def test_existing_font_reused_without_ownership_or_cache_change(self):
+        os.environ['MOCK_FONT_INSTALLED'] = '1'
+        self.install(components='island', fonts=True)
+        self.assertFalse((self.home/'.local/share/fonts/stark-shell').exists())
+        self.assertEqual(self.manager.state()['resources'], {})
+        self.assertEqual(stark.load_json(self.config)['bar']['stark']['fontFamily'], 'Shantell Sans')
+        calls = [json.loads(line) for line in (self.home/'commands.jsonl').read_text().splitlines()]
+        self.assertFalse(any(c[0] == 'fc-cache' for c in calls))
+        self.uninstall()
+        self.assertTrue(self.manager.font_available())
+
+    def test_font_failure_rolls_back_plugins_and_configuration(self):
+        os.environ['MOCK_FONT_FAIL'] = '1'
+        with self.assertRaisesRegex(stark.Error, 'not available to fontconfig'):
+            self.install(components='island', fonts=True)
+        self.assertEqual(stark.load_json(self.config), self.original)
+        self.assertFalse((self.home/'.local/share/fonts/stark-shell/Test.ttf').exists())
+        self.assertFalse(self.manager.state_path.exists())
+
+    def test_font_cache_refresh_even_when_shell_reload_deferred(self):
+        self.install(components='island', fonts=True, no_reload=True)
+        self.assertTrue(self.manager.font_available())
+        calls = [json.loads(line) for line in (self.home/'commands.jsonl').read_text().splitlines()]
+        self.assertTrue(any(c[0] == 'fc-cache' for c in calls))
+        self.assertFalse(any(c[:3] == ['omarchy', 'restart', 'shell'] for c in calls))
+
+    def test_minimal_font_does_not_change_native_font(self):
+        self.install(fonts=True)
+        self.assertNotIn('stark', stark.load_json(self.config)['bar'])
+        self.assertEqual(stark.load_json(self.config)['bar']['id'], 'omarchy.bar')
+
+    def test_inactive_component_cannot_report_install_success(self):
+        os.environ['MOCK_INACTIVE'] = 'stark.visualizer'
+        with self.assertRaisesRegex(stark.Error, 'not enabled'):
+            self.install()
+        self.assertEqual(stark.load_json(self.config), self.original)
+        self.assertFalse(self.manager.state_path.exists())
+
+    def test_missing_session_is_actionable_and_does_not_publish(self):
+        os.environ['MOCK_FAIL_PING'] = '1'
+        with self.assertRaisesRegex(stark.Error, 'logged-in Omarchy desktop'):
+            self.install()
+        self.assertFalse(self.manager.plugins.exists())
+        self.assertFalse((self.manager.state_dir/'transactions').exists())
+
+    def test_reactivation_requires_explicit_option(self):
+        self.install()
+        c = stark.load_json(self.config)
+        c['bar']['layout']['centerEnd'] = []
+        self.config.write_bytes(stark.json_bytes(c))
+        self.install()
+        self.assertEqual(stark.load_json(self.config)['bar']['layout']['centerEnd'], [])
+        self.install(reactivate=True)
+        self.assertEqual(stark.load_json(self.config)['bar']['layout']['centerEnd'], [{'id': 'stark.visualizer'}])
+
+    def test_dry_run_fonts_and_profiles_leave_all_files_unchanged(self):
+        before = {str(p): p.read_bytes() for p in self.home.rglob('*') if p.is_file()}
+        self.install(mode='standard', fonts=True, dry_run=True, install_deps=True, yes=True)
+        after = {str(p): p.read_bytes() for p in self.home.rglob('*') if p.is_file() and p.name != 'commands.jsonl'}
+        self.assertEqual(before, after)
+        self.assertFalse(self.manager.state_dir.exists())
+
+    def test_dependency_dry_run_never_invokes_sudo(self):
+        with patch.object(stark.shutil, 'which', side_effect=lambda n: None if n == 'patch' else '/mock/'+n):
+            with patch.object(stark.subprocess, 'run') as invoke:
+                self.assertFalse(self.dependencies(self.args(dry_run=True, install_deps=True, yes=True)))
+                invoke.assert_not_called()
+
+    def test_dependency_install_requires_explicit_noninteractive_consent(self):
+        with patch.object(stark.shutil, 'which', side_effect=lambda n: None if n == 'jq' else '/mock/'+n):
+            with patch.object(stark.subprocess, 'run') as invoke:
+                with patch.object(stark.sys.stdin, 'isatty', return_value=False):
+                    with self.assertRaisesRegex(stark.Error, 'permission'):
+                        self.dependencies(self.args(install_deps=True))
+                invoke.assert_not_called()
+
+    def test_dependency_install_runs_only_exact_pacman_command(self):
+        installed = False
+        def which(name):
+            return None if name == 'jq' and not installed else '/mock/'+name
+        def install(command, check):
+            nonlocal installed
+            self.assertEqual(command, ['sudo', 'pacman', '-S', '--needed', '--noconfirm', 'jq'])
+            installed = True
+            return stark.subprocess.CompletedProcess(command, 0)
+        with patch.object(stark.shutil, 'which', side_effect=which):
+            with patch.object(stark.subprocess, 'run', side_effect=install):
+                self.assertTrue(self.dependencies(self.args(install_deps=True, yes=True)))
+
+    def test_dependency_package_failure_is_actionable(self):
+        with patch.object(stark.shutil, 'which', side_effect=lambda n: None if n == 'patch' else '/mock/'+n):
+            with patch.object(stark.subprocess, 'run', return_value=stark.subprocess.CompletedProcess([], 1)):
+                with self.assertRaisesRegex(stark.Error, 'Package installation failed'):
+                    self.dependencies(self.args(install_deps=True, yes=True))
+
+    def test_dependency_prompt_decline_never_invokes_sudo(self):
+        with patch.object(stark.shutil, 'which', side_effect=lambda n: None if n == 'patch' else '/mock/'+n):
+            with patch.object(stark.subprocess, 'run') as invoke:
+                with patch.object(stark.sys.stdin, 'isatty', return_value=True), patch('builtins.input', return_value='n'):
+                    with self.assertRaisesRegex(stark.Error, 'declined'):
+                        self.dependencies(self.args(install_deps=True))
+                invoke.assert_not_called()
+
+    def test_applying_existing_font_to_installed_island_restarts_shell(self):
+        self.install(components='island')
+        os.environ['MOCK_FONT_INSTALLED'] = '1'
+        (self.home/'commands.jsonl').write_text('')
+        self.install(fonts=True)
+        calls = [json.loads(line) for line in (self.home/'commands.jsonl').read_text().splitlines()]
+        self.assertTrue(any(c[:3] == ['omarchy', 'restart', 'shell'] for c in calls))
+        self.assertFalse(any(c[0] == 'fc-cache' for c in calls))
+
+    def test_reactivation_does_not_overwrite_edited_font(self):
+        self.install(components='island', fonts=True)
+        config = stark.load_json(self.config)
+        config['bar']['stark']['fontFamily'] = 'Personal Font'
+        self.config.write_bytes(stark.json_bytes(config))
+        with self.assertRaisesRegex(stark.Error, 'Previously managed configuration was edited'):
+            self.install(reactivate=True)
+        self.assertEqual(stark.load_json(self.config)['bar']['stark']['fontFamily'], 'Personal Font')
+
+    def test_wizard_yes_does_not_imply_package_consent(self):
+        with patch.object(stark.shutil, 'which', side_effect=lambda n: None if n == 'patch' else '/mock/'+n):
+            with patch.object(stark.subprocess, 'run') as invoke:
+                with self.assertRaisesRegex(stark.Error, 'requires --install-deps --yes'):
+                    self.dependencies(self.args(interactive=True, yes=True))
+                invoke.assert_not_called()
+
+    def test_unsupported_omarchy_cannot_trigger_package_install(self):
+        version = stark.subprocess.CompletedProcess([], 0, stdout='3.0.0', stderr='')
+        with patch.object(stark.shutil, 'which', side_effect=lambda n: None if n == 'patch' else '/mock/'+n):
+            with patch.object(stark, 'run', return_value=version), patch.object(stark.subprocess, 'run') as invoke:
+                with self.assertRaisesRegex(stark.Error, 'Unsupported Omarchy'):
+                    self.manager.dependencies(self.args(install_deps=True, yes=True))
+                invoke.assert_not_called()
+
+    def test_root_install_rejected(self):
+        with patch.object(stark.os, 'geteuid', return_value=0), patch.object(stark.sys, 'argv', ['manager', 'install']):
+            with self.assertRaisesRegex(stark.Error, 'as root'):
+                stark.main()
+
+    def test_wizard_can_select_standard_and_fonts(self):
+        args = self.args(interactive=True)
+        with patch.object(stark.sys.stdin, 'isatty', return_value=True), patch('builtins.input', side_effect=['2', 'y', 'n']):
+            self.manager.wizard(args)
+        self.assertEqual(args.mode, 'standard')
+        self.assertTrue(args.fonts)
+        self.assertFalse(args.animations)
 
     def test_no_install_uninstall_is_noop(self):
         self.uninstall();self.assertEqual(stark.load_json(self.config),self.original)

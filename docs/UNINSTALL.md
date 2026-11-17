@@ -40,3 +40,10 @@ must still be resolved; `--keep-config` is not an overwrite bypass.
 
 Deleting the receipt is not an uninstall method. Without it, files are unmanaged
 and the installer intentionally refuses to claim or erase them.
+
+## Fonts and system packages
+
+The recorded island font setting is restored when unchanged. Fonts already present
+before installation are reused and retained. Only hash-matching font files copied
+by Stark are removed. Approved pacman dependencies are retained; they may be used
+by other software and are outside the desktop transaction.

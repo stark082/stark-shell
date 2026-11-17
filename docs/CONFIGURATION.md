@@ -20,7 +20,7 @@ visualizer in `centerEnd` to preserve the clock's center.
 Use `omarchy plugin list` to see installed IDs and `omarchy plugin disable ID` to
 disable a plugin. Clones use `omarchy.clonedFrom`, so native routing and source
 restoration are preserved. Disabling an installed component is respected by
-repeat installation and update: they do not reactivate it.
+repeat installation and update unless you explicitly pass `--reactivate`.
 
 ## Island styling
 
@@ -39,8 +39,10 @@ The optional island reads `bar.stark` from your existing `shell.json`:
 ```
 
 This is a **fragment to merge**, not a replacement configuration. Keep all other
-keys. Omit `fontFamily` to follow Omarchy's normal font. Shantell Sans must be
-installed (`--fonts`) before selecting it. Colors follow Omarchy's active palette
+keys. `./install.sh --mode standard --fonts` automatically detects/installs the
+font and merges the fontFamily setting, with a reversible backup. No manual font
+application is needed. Omit fontFamily to follow Omarchy's normal font (manual
+changes to managed values can require review during uninstall). Colors follow Omarchy's active palette
 and shell theme tokens. There are no bundled monitor, network, weather or audio
 identities.
 
@@ -94,3 +96,8 @@ from the development account.
 The optional System Monitor is read-only with respect to fan control in this
 release. Its upstream privileged Asahi helper is disabled; Stark does not invoke
 that helper automatically. Existing sysfs sensor readings remain available.
+
+The island's existing Style binding can also affect widgets sharing Quickshell's
+Style singleton while the island is active. Terminal settings and global fontconfig
+aliases are untouched. Uninstall restores the recorded prior font setting when it
+has not been edited and removes only font files installed by Stark itself.

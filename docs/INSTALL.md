@@ -10,38 +10,58 @@ is not used as the detector.
 
 Have `python3` (3.10 or later), `bash`, `jq`, `patch`, `omarchy`, `omarchy-shell`,
 `quickshell`, and `hyprctl` available. Run inside your logged-in Omarchy session.
-The installer reports missing commands and unsupported versions. It does not use
-sudo, install packages, or edit `/usr/share/omarchy`.
+The installer reports missing commands and unsupported versions. With your
+permission it installs missing prerequisites using `sudo pacman -S --needed`.
+The rest of installation runs as your normal user. It never edits `/usr/share/omarchy`.
 
 CAVA is optional. Without it, the visualizer uses a PipeWire peak-driven wave,
 which is not a true spectrum. Install CAVA yourself if you want frequency analysis.
-Fonts require `fc-cache` only when selecting `--fonts`.
+Fonts require `fc-cache` and `fc-match` from fontconfig when selecting `--fonts`.
 
-## Get the project
+## One local entry point
 
-The fastest path is the one-line bootstrap, which clones a managed copy into
-`~/.local/share/stark-shell` and runs the installer with any arguments you pass:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/stark082/stark-shell/main/bootstrap.sh | bash -s -- --dry-run
-```
-
-`STARK_REPO`, `STARK_BRANCH`, and `STARK_SHARE` environment variables override the
-source URL, branch, and destination. Re-running the bootstrap fast-forwards the
-managed checkout and refuses to proceed if that copy has local changes.
-
-Alternatively, download the repository, or clone its published GitHub URL with
-`git clone`. This creates a working copy of the project; it does not change your
-desktop. Enter that folder with `cd stark-shell` before running the following commands.
+Open a terminal in the repository and run `./install.sh`. With no arguments in a
+terminal it opens the wizard; without a terminal it retains minimal installation.
+Do not run it with sudo. Python 3.10+ is required; if Python is missing, the Bash
+entry point can offer its package installation before starting the Python manager.
 
 ```bash
-python3 tools/stark_manager.py doctor
-./install.sh --dry-run
+./install.sh --interactive
+./install.sh --mode standard --fonts --dry-run
+./install.sh --mode standard --fonts --install-deps
 ```
 
-`doctor` prints detected versions. `--dry-run` builds in a temporary directory,
-validates manifests, checks ownership conflicts and previews destinations. It does
-not write desktop configuration, fonts, plugins, backups, or installation state.
+The wizard and `--install-deps` show missing packages and ask permission before
+running sudo. For explicit unattended approval use `--install-deps --yes`.
+Only static mapped package names are passed to pacman: python, jq, patch,
+quickshell, hyprland, and fontconfig as needed. Omarchy itself must already exist.
+Version/source checks still run after packages are installed; installing a package
+does not guarantee its current repository version is compatible with Stark.
+The installer does not refresh package databases or perform a system upgrade.
+If pacman fails, read its output and repair/update your Omarchy system separately.
+Package changes are not part of Stark's desktop rollback or uninstall.
+
+A dry run never invokes sudo or modifies configuration, fonts, plugins, cache,
+backups or receipts. Missing prerequisites produce an incomplete preview and a
+nonzero exit code. A full preview builds and validates in temporary storage.
+A real install additionally requires the running Omarchy shell in your session.
+
+There is no recommended remote one-line command yet. A release bootstrap needs a
+reviewed script and an independently trusted release commit; development branches
+are explicitly unverified. Use this local checkout while integration is tested.
+
+## Modes
+
+| Mode | Selection |
+| --- | --- |
+| minimal | Visualizer only; native bar remains |
+| standard | Island, launcher, calendar, visualizer |
+| complete | All components in the manifest lock (currently 14) |
+| custom | Explicit `--components` list, plus dependencies |
+
+Island/panel modes remain experimental, not certified stable. Fonts and animation
+overrides are separate explicit options; `--fonts` installs/reuses and applies the
+font automatically when the island is selected.
 
 ## Choose components
 
@@ -65,7 +85,7 @@ not write desktop configuration, fonts, plugins, backups, or installation state.
 | `system-monitor` | `stark.system-monitor` | Island; optional third-party system dashboard |
 
 Dependencies are added automatically and displayed during preview. Selecting any
-integrated panel therefore opts into the island. There is no `all` shortcut: name
+integrated panel therefore opts into the island. Use `--mode complete` for all supported components, or name
 what you want to install. Repeating installation adds components; it does not
 silently remove previously selected ones. To reduce a profile, uninstall safely
 and reinstall the desired selection.
@@ -88,9 +108,19 @@ inside the island. No device-specific layout is shipped.
 ./install.sh --components island,launcher --fonts --animations
 ```
 
-`--fonts` copies Shantell Sans and its license into your user font directory. It
-does not change terminals or global font aliases. Selecting it for the island is
-a separate documented setting.
+`--fonts` checks the exact family returned by fontconfig (a fallback font is not
+accepted). If Shantell Sans is missing it copies the bundled, hash-verified font
+files/license to your user font directory and refreshes that cache. An existing
+font is reused and is never claimed or removed by this installer.
+
+When the island is selected, it merges `bar.stark.fontFamily = "Shantell Sans"`
+into shell.json, preserving other settings and recording the prior value in the
+transaction backup/receipt. It verifies font availability before applying. A failed
+verification rolls back. Font cache refresh still runs with `--no-reload`.
+With minimal mode it makes the font available without changing the native font.
+No terminal font or global fontconfig alias is changed. The existing island uses
+shared Quickshell Style tokens, so other shell widgets may inherit its font while
+that island is active.
 
 `--animations` installs one Lua module and appends a marked `dofile` block to
 `~/.config/hypr/hyprland.lua`. It enables horizontal workspace slides and an
@@ -117,3 +147,11 @@ not in GitHub or a shared dotfiles repository.
 Existing unmanaged Stark folders are a conflict even if their contents happen to
 match. This protects the prototype. There is no destructive `--force` or automatic
 adoption option.
+
+## Repeated installation and reactivation
+
+Repeating installation/updates preserves disabled states and existing placements.
+Use `./install.sh --reactivate` to explicitly enable managed components again.
+Only a return to the receipt's exact enabled state is automatically reconciled;
+other edited layouts remain conflicts. `--no-reload` leaves runtime verification
+for you and prints a reminder. Visualizer visibility still depends on playback.
