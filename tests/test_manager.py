@@ -314,6 +314,18 @@ class ManagerTests(unittest.TestCase):
         with self.assertRaises(stark.Error): self.install(fonts=True)
         self.assertFalse(self.manager.plugins.exists())
 
+    def test_malformed_existing_json_refused_without_pending_transaction(self):
+        self.config.write_text('{broken')
+        with self.assertRaises(ValueError): self.install()
+        self.assertFalse(self.manager.plugins.exists())
+        self.assertFalse((self.manager.state_dir/'transactions').exists())
+
+    def test_non_object_existing_config_refused(self):
+        self.config.write_text('[]')
+        with self.assertRaises(stark.Error): self.install()
+        self.assertEqual(self.config.read_text(),'[]')
+        self.assertFalse((self.manager.state_dir/'transactions').exists())
+
     def test_no_install_uninstall_is_noop(self):
         self.uninstall();self.assertEqual(stark.load_json(self.config),self.original)
 

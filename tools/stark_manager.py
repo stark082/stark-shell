@@ -430,8 +430,10 @@ class Manager:
                 return
             run(['omarchy-shell', 'shell', 'ping'])
             self.ensure_no_pending()
-            txn = Transaction(self.state_dir, 'update' if updating else 'install')
             before = load_json(self.shell, {})
+            if not isinstance(before, dict):
+                raise Error('shell.json must contain a JSON object. Repair it before installing; no desktop files changed.')
+            txn = Transaction(self.state_dir, 'update' if updating else 'install')
             state = copy.deepcopy(previous) if previous else {'schema': 1, 'components': {}, 'resources': {},
                                                              'shell_changes': [], 'hypr_block': None,
                                                              'shell_existed': self.shell.exists(),

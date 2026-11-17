@@ -7,7 +7,7 @@ actual graphical runtime acceptance.
 
 | Check | Result |
 | --- | --- |
-| Isolated lifecycle tests | 31 passed, using temporary HOME/config/state and mocked native commands |
+| Isolated lifecycle tests | 33 passed, using temporary HOME/config/state and mocked native commands |
 | Media focus regressions | 6 cases passed using Node.js |
 | Bash syntax | install, update, uninstall and test runner passed |
 | ShellCheck | 0.11.0, entry/test scripts and the bundled sensor-discovery helper passed |
@@ -24,7 +24,7 @@ Lifecycle tests cover fresh/repeated/selective install, missing optional CAVA,
 unsupported versions/interfaces, existing configuration preservation, unmanaged
 collisions, upgrades/removal of obsolete owned files, activation/reload failures,
 rollback/recovery, safe uninstall, manual file/list/include conflicts, symlinks,
-font integrity, absent initial config, and original configuration modes.
+font integrity, absent initial config, original configuration modes, and invalid initial JSON rejection.
 
 ShellCheck was run from a temporary downloaded official release, not installed as
 a system package. Tests invoke mock Omarchy/Hyprland/font-cache commands; they do
