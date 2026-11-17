@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "stark.network",
+  "name": "Stark Network",
+  "version": "0.1.0",
+  "author": "Stark Shell contributors; Omarchy",
+  "description": "Wi-Fi list and connection state",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Stark Network",
+    "description": "Wi-Fi list and connection state",
+    "category": "Network",
+    "allowMultiple": false
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.network"
+  },
+  "license": "MIT"
+}

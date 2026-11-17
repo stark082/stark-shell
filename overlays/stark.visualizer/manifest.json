@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "stark.visualizer",
+  "name": "Stark Visualizer",
+  "version": "0.1.0",
+  "author": "Stark Shell contributors; Stark; adapted from Vyntaris",
+  "license": "GPL-3.0-only",
+  "description": "Audio-reactive media bars in the Stark notch.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Stark Visualizer",
+    "category": "Media",
+    "allowMultiple": false,
+    "defaultSection": "center"
+  }
+}

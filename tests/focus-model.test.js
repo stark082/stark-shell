@@ -1,0 +1,12 @@
+const assert = require('node:assert/strict');
+const m = require('../overlays/stark.visualizer/FocusModel.js');
+const player = {identity:'Brave',desktopEntry:'',trackTitle:'Tere Hawaale (Full Video) Laal Singh Chaddha | Aamir,Kareena'};
+const web = {appId:'brave-youtube.com__-Default',title:'Tere Hawaale - YouTube'};
+const wrong = {appId:'brave-browser',title:'Google Fonts - Brave'};
+assert.equal(m.choose(player,[wrong,web]),web);
+assert.equal(m.choose(player,[wrong]),null);
+assert.equal(m.choose(player,[web,{...web}]),null);
+assert.equal(m.choose({identity:'Spotify',desktopEntry:'spotify',trackTitle:'Track'},[{appId:'spotify',title:'Spotify'}]).appId,'spotify');
+assert.equal(m.titleScore('Café Song — Official Video','Cafe Song - YouTube'),90);
+assert.equal(m.choose({identity:'Brave',trackTitle:'Different song'},[web]),null);
+console.log('Media focus: 6 regression cases passed');

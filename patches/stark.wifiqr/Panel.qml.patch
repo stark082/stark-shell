@@ -1,0 +1,62 @@
+--- Panel.qml
++++ Panel.qml
+@@ -6,6 +6,8 @@
+ import qs.Commons
+ import qs.Ui
+ import "Model.js" as Model
++import qs.Commons as Commons
++import "../stark.bar/menu-bridge" as Integration
+ 
+ // Centered Wi-Fi share overlay: no card, just the QR code floating on a
+ // heavy scrim. Esc or the scrim dismiss it.
+@@ -17,6 +19,14 @@
+ // {"iface": "wlan0", "ssid": "MyWifi"}.
+ Item {
+   id: root
++  readonly property string embeddedKind:"wifiqr"
++  readonly property bool embedded: Integration.Bridge.host !== null && Integration.Bridge.host.bar.position === "top"
++  readonly property real embeddedWidth: Math.max(320,Math.min(500,content.implicitWidth+32))
++  readonly property real embeddedHeight: content.implicitHeight+32
++  onOpenedChanged: {
++    if(root.opened && root.embedded){Integration.Bridge.host.openExtra(root);Qt.callLater(function(){keyCatcher.forceActiveFocus()})}
++    else if(!root.opened && Integration.Bridge.host)Integration.Bridge.host.extraClosed(root)
++  }
+ 
+   property string omarchyPath: Quickshell.env("OMARCHY_PATH")
+   property var shell: null
+@@ -43,12 +53,13 @@
+ 
+   // The scrim below is a fixed near-black regardless of theme, so text on
+   // it needs a fixed light palette, not the themed foreground.
+-  readonly property color onScrim: "white"
+-  readonly property color onScrimDim: Qt.rgba(1, 1, 1, 0.55)
+-  readonly property color onScrimUrgent: "#ff6b6b"
++  readonly property color onScrim: Commons.Color.foreground
++  readonly property color onScrimDim: Commons.Color.muted
++  readonly property color onScrimUrgent: Commons.Color.urgent
+   readonly property string fontFamily: Style.font.family
+ 
+   function open(payloadJson) {
++    Integration.Bridge.selectHost()
+     var payload = {}
+     try { payload = JSON.parse(payloadJson || "{}") || {} } catch (e) {}
+     // The payload SSID titles the card during generation; the meta line the
+@@ -211,7 +222,8 @@
+   }
+ 
+   OverlayWindow {
+-    shown: root.opened
++    id: qrOverlay
++    shown: root.opened && !root.embedded
+     WlrLayershell.namespace: "omarchy-network-qr"
+ 
+     // Deep scrim: the floating code needs the backdrop to carry the contrast
+@@ -228,6 +240,8 @@
+ 
+     Item {
+       id: keyCatcher
++      parent: root.embedded ? Integration.Bridge.host.extraSurface : qrOverlay.contentItem
++      visible:root.opened
+       anchors.fill: parent
+       focus: true
+ 

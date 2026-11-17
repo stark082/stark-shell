@@ -1,0 +1,76 @@
+--- Panel.qml
++++ Panel.qml
+@@ -1,4 +1,5 @@
+ import QtQuick
++import "../stark.bar/menu-bridge" as Integration
+ import QtQuick.Controls
+ import Quickshell
+ import Quickshell.Io
+@@ -8,6 +9,36 @@
+ 
+ Panel {
+   id: root
++
++  readonly property string embeddedKind: "agents"
++  readonly property bool embedded: Integration.Bridge.host !== null && Integration.Bridge.host.bar.position === "top"
++  readonly property real embeddedWidth: panel.contentWidth
++  readonly property real embeddedHeight: panel.contentHeight
++  property Item originalContentParent: null
++  Binding {
++    target: panel.loadedContent
++    property: "visible"
++    value: root.opened
++    when: root.embedded && panel.loadedContent !== null
++  }
++  function open() {
++    Integration.Bridge.selectHost()
++    if (!root.embedded && originalContentParent && panel.loadedContent)
++      panel.loadedContent.parent = originalContentParent
++    root.controller.show()
++  }
++  function close() { root.controller.hide() }
++  function syncEmbedded() {
++    if (!root.opened || !root.embedded) return
++    panel.ensureContent()
++    var content = panel.loadedContent
++    if (!content) return
++    if (!originalContentParent) originalContentParent = content.parent
++    var host = Integration.Bridge.host
++    host.openExtra(root)
++    content.parent = host.extraSurface
++    Qt.callLater(function(){ if (root.opened) content.forceActiveFocus() })
++  }
+   moduleName: "omarchy.agents"
+   ipcTarget: "omarchy.agents"
+   manageIpc: false
+@@ -873,7 +904,8 @@
+   implicitWidth: button.implicitWidth
+   implicitHeight: button.implicitHeight
+ 
+-  onOpenedChanged: if (opened) {
++  onOpenedChanged: {
++    if (opened) {
+     if (addStage !== "running") addStage = ""
+     resetKeys()
+     if (usage.enabledProviders.length === 0 && !checkProcess.running) checkProcess.running = true
+@@ -881,6 +913,9 @@
+     if (panelFlick) panelFlick.contentY = 0
+     usage.refreshLimits()
+     Qt.callLater(function() { if (panel.loadedContent) panel.loadedContent.forceActiveFocus() })
++  }
++    if (root.opened && root.embedded) root.syncEmbedded()
++    else if (!root.opened && Integration.Bridge.host) Integration.Bridge.host.extraClosed(root)
+   }
+ 
+   Main {
+@@ -984,8 +1019,9 @@
+     anchorItem: button
+     owner: root
+     bar: root.bar
+-    open: root.opened
++    open: root.opened && !root.embedded
+     focusTarget: panel.loadedContent
++    onLoadedContentChanged: if (root.opened && root.embedded) Qt.callLater(root.syncEmbedded)
+     contentWidth: panel.fittedContentWidth(Style.space(380))
+     contentHeight: panel.fittedContentHeight(panel.loadedContentHeight, Style.space(860))
+ 

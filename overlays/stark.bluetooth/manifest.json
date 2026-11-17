@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "stark.bluetooth",
+  "name": "Stark Bluetooth",
+  "version": "0.1.0",
+  "author": "Stark Shell contributors; Omarchy",
+  "description": "Bluetooth device list with connect/disconnect",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Stark Bluetooth",
+    "description": "Bluetooth device list with connect/disconnect",
+    "category": "Network",
+    "allowMultiple": false
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.bluetooth"
+  },
+  "license": "MIT"
+}

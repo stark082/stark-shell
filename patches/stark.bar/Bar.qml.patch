@@ -1,0 +1,101 @@
+--- Bar.qml
++++ Bar.qml
+@@ -10,9 +10,17 @@
+ import qs.Commons as Commons
+ import qs.Ui
+ import "BarModel.js" as BarModel
++import "menu-bridge" as Integration
+ 
+ Item {
+   id: root
++  ShellIpc {
++    target:"stark.integrations"
++    function status():string {
++      var host=Integration.Bridge.host
++      return JSON.stringify({opened:host?.opened ?? false,page:host?.page ?? "",kind:host?.embeddedExtra?.embeddedKind ?? "",width:host?.drawnWidth ?? 0,height:host?.drawnHang ?? 0,contentInNotch:!!host?.embeddedExtra && host.extraSurface.children.length>0,visibleContents:host?host.extraSurface.children.filter(item=>item.visible).length:0,targetWidth:host?.panelWidth ?? 0,targetHeight:host?.hang ?? 0,calendarLayoutWidth:host?.calendarSurface.width ?? 0,calendarLayoutHeight:host?.calendarSurface.height ?? 0})
++    }
++  }
+ 
+   // The omarchy-shell host injects omarchyPath from OMARCHY_PATH.
+   property string omarchyPath: Quickshell.env("OMARCHY_PATH")
+@@ -76,7 +84,14 @@
+   // Resolves through fontconfig at paint time (Style.font.family defaults
+   // to "monospace"), so changing the system font (via `omarchy-font-set`)
+   // updates the bar without a reload.
+-  property string fontFamily: Style.font.family
++  readonly property var starkSettings: Util.isPlainObject(barConfig.stark) ? barConfig.stark : ({})
++  function starkNumber(name, fallback, minimum, maximum) {
++    var value = Number(starkSettings[name] ?? fallback)
++    return isFinite(value) ? Math.max(minimum, Math.min(maximum, value)) : fallback
++  }
++  property string fontFamily: String(starkSettings.fontFamily || Style.font.family)
++  Binding { target: Style; property: "fontFamily"; value: String(root.starkSettings.fontFamily || "monospace"); when: !!root.starkSettings.fontFamily }
++
+   // Bound to the central Color singleton so the bar tracks shell.toml's
+   // [bar] section. Property names kept for the rest of this file's bindings.
+   property color themeForeground: Commons.Color.bar.text
+@@ -714,6 +729,7 @@
+ 
+   readonly property bool vertical: position === "left" || position === "right"
+   readonly property int barSize: vertical ? Style.bar.sizeVertical : Style.bar.sizeHorizontal
++  readonly property real notchDepth: root.starkNumber("notchDepth", 11, 0, 64)
+ 
+   // Display cutouts (a camera notch) the platform's own package describes in
+   // the fixed platform root, which no environment variable moves. Most machines
+@@ -1724,7 +1740,7 @@
+     // An explicit zone instead of Auto: the reserved area stays the strip's
+     // thickness though the window spans its screen.
+     exclusionMode: root.barHidden ? ExclusionMode.Ignore : ExclusionMode.Normal
+-    exclusiveZone: thickness
++    exclusiveZone: thickness + (root.position === "top" ? root.notchDepth : 0)
+ 
+     // While this window's widget or bar-move drag is live, the whole surface
+     // takes input (mask below), so the pointer never leaves the bar surface
+@@ -1813,15 +1829,28 @@
+     // every layer on the monitor back above whenever a window on any other
+     // workspace leaves fullscreen, or the layer remaps. The invisible strip
+     // would then take the clicks meant for the top of the fullscreen window.
+-    mask: dragActive ? null : (underFullscreen ? noInputRegion : stripInputRegion)
++    mask: dragActive || notchHost.opened ? null : (underFullscreen ? noInputRegion : stripInputRegion)
++    WlrLayershell.keyboardFocus: notchHost.opened ? ((notchHost.page === "menu" || notchHost.page === "calendar" || notchHost.page === "weather" || notchHost.page === "audio" || notchHost.page === "extra") ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.OnDemand) : WlrKeyboardFocus.None
+ 
+     Region {
+       id: stripInputRegion
+       item: barStrip
++      Region { item: notchHost.notchInput }
+     }
+ 
+     Region {
+       id: noInputRegion
++    }
++
++    NotchHost {
++      id:notchHost
++      anchors.fill:parent
++      bar:root;stripHeight:barWindow.thickness
++      notchDepth:root.notchDepth
++      screenName:barWindow.screen ? barWindow.screen.name : ""
++      visible:root.position === "top" && !barWindow.underFullscreen
++      readonly property var centerBox: root.centerBoxes.find(box => box.active && root.sameWindow(box.window, barWindow)) || null
++      closedWidth:Math.max(root.starkNumber("minimumWidth", 186, 80, 1024),(centerBox?centerBox.extent:0)+36)
+     }
+ 
+     // The bar itself, along its screen edge.
+@@ -1835,6 +1864,7 @@
+ 
+       Rectangle {
+         anchors.fill: parent
++        visible: root.position !== "top"
+         color: root.transparent ? "transparent" : (root.glassy ? root.glassBackground : root.background)
+       }
+ 
+@@ -2361,7 +2391,8 @@
+       pool: sections.pool
+       active: sections.active
+       fixedEdge: sections.besideRight ? "end" : "center"
+-      crossSize: root.vertical ? sections.width : sections.height
++      // Center every notch widget within the full strip plus notch depth.
++      crossSize: root.vertical ? sections.width : sections.height + (root.position === "top" && !sections.besideRight ? root.notchDepth : 0)
+       x: root.vertical ? 0 : (sections.besideRight ? beginList.width : Math.round((sections.width - width) / 2))
+       y: root.vertical ? Math.round((sections.height - height) / 2) : 0
+     }

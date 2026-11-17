@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "stark.wifiqr",
+  "name": "Stark Wifiqr",
+  "version": "0.1.0",
+  "author": "Stark Shell contributors; Omarchy",
+  "description": "Share the connected Wi-Fi network as a scannable QR code",
+  "kinds": [
+    "panel"
+  ],
+  "entryPoints": {
+    "panel": "Panel.qml"
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.wifiqr"
+  },
+  "license": "MIT"
+}

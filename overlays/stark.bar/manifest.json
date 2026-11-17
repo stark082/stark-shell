@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "stark.bar",
+  "name": "Stark Island",
+  "version": "0.1.0",
+  "author": "Stark Shell contributors; Omarchy",
+  "description": "Status bar with widgets",
+  "kinds": [
+    "bar"
+  ],
+  "entryPoints": {
+    "bar": "Bar.qml"
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.bar"
+  },
+  "license": "GPL-3.0-only"
+}

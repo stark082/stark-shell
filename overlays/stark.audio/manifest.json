@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "stark.audio",
+  "name": "Stark Audio",
+  "version": "0.1.0",
+  "author": "Stark Shell contributors; Omarchy",
+  "description": "Volume slider, output picker, per-app mixer",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Stark Audio",
+    "description": "Volume slider, output picker, per-app mixer",
+    "category": "Audio",
+    "allowMultiple": false
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.audio"
+  },
+  "license": "MIT"
+}

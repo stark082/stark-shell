@@ -1,0 +1,15 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  lifecycle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require Bash lint tools
+        run: command -v shellcheck && command -v jq && command -v patch
+      - name: Package consistency
+        run: python3 tools/check.py
+      - name: Isolated lifecycle and focus regressions
+        run: ./tests/run.sh

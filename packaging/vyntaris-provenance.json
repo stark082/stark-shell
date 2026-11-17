@@ -1,0 +1,22 @@
+{
+  "repository": "https://github.com/vyntaris/vyntaris",
+  "commit": "967cdee5436b85e5a7ce8c6b300dddfddc820e03",
+  "files": {
+    "config/quickshell/services/Visualizer.qml": {
+      "sha256": "dd9183b860749cbeba4e9d74b5375829986062cf0be751cb9a5a9d5382b7e131",
+      "matches_commit": true
+    },
+    "config/quickshell/components/Bars.qml": {
+      "sha256": "a7823416a456d990325c1d66b09ac1a50b0577c1aa047518acee8aec1925aed8",
+      "matches_commit": true
+    },
+    "config/quickshell/components/Slant.js": {
+      "sha256": "8ef6527d09ffd1a2899e110abf4703a600ccc0d89ae0bf1c5179015b8d07dc3b",
+      "matches_commit": true
+    },
+    "config/quickshell/components/BarShape.qml": {
+      "sha256": "7dc3c736e5031112f98f219346dc0e609fbd2e57be9f76d9be8fea53b98c290e",
+      "matches_commit": true
+    }
+  }
+}

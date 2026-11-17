@@ -1,0 +1,67 @@
+--- Panel.qml
++++ Panel.qml
+@@ -5,9 +5,34 @@
+ import qs.Commons as Commons
+ import qs.Ui
+ import "Model.js" as Model
++import "../stark.bar/menu-bridge" as Integration
+ 
+ Panel {
+   id: root
++  readonly property bool embedded: Integration.Bridge.host !== null && Integration.Bridge.host.bar.position === "top"
++  readonly property real embeddedWidth: panel.contentWidth
++  readonly property real embeddedHeight: panel.contentHeight
++  property Item originalContentParent: null
++  function prepareEmbedded() {
++    Integration.Bridge.selectHost()
++    if (!root.embedded && originalContentParent && panel.loadedContent)
++      panel.loadedContent.parent = originalContentParent
++  }
++  function syncEmbedded() {
++    if (!root.opened || !root.embedded) return
++    panel.ensureContent()
++    var content = panel.loadedContent
++    if (!content) return
++    if (!originalContentParent) originalContentParent = content.parent
++    var host = Integration.Bridge.host
++    host.openWeather(root)
++    content.parent = host.weatherSurface
++    Qt.callLater(function(){ if (root.opened) content.forceActiveFocus() })
++  }
++  onOpenedChanged: {
++    if (root.opened && root.embedded) root.syncEmbedded()
++    else if (!root.opened && Integration.Bridge.host) Integration.Bridge.host.weatherClosed(root)
++  }
+   moduleName: "omarchy.weather"
+   ipcTarget: "omarchy.weather"
+   manageIpc: false
+@@ -24,6 +49,7 @@
+   readonly property var barIdentity: hostWidget || root
+ 
+   function open() {
++    root.prepareEmbedded()
+     openedFromHotkey = false
+     setCenterHoverRevealSuppressed(false)
+     root.controller.show()
+@@ -32,6 +58,7 @@
+   }
+ 
+   function openFromHotkey() {
++    root.prepareEmbedded()
+     openedFromHotkey = true
+     root.controller.show()
+     locationFile.reload()
+@@ -540,11 +567,12 @@
+     anchorItem: root.anchorItem
+     owner: root.barIdentity
+     bar: root.bar
+-    open: root.opened
++    open: root.opened && !root.embedded
+     // Anchor under the widget rather than the middle of the bar, so the
+     // popup follows wherever the widget is placed.
+     centerOnBar: false
+     focusTarget: panel.loadedContent
++    onLoadedContentChanged: if (root.opened && root.embedded) Qt.callLater(root.syncEmbedded)
+     contentWidth: panel.fittedContentWidth(Style.space(480))
+     contentHeight: panel.fittedContentHeight(panel.loadedContentHeight)
+ 

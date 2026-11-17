@@ -1,0 +1,10 @@
+--- BarWidget.qml
++++ BarWidget.qml
+@@ -13,6 +13,7 @@
+ BarWidget {
+   id: root
+   moduleName: "omarchy.clock"
++
+ 
+   property date displayDate: clock.date
+ 

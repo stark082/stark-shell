@@ -1,0 +1,812 @@
+[
+  {
+    "id": "stark.agents",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.agents",
+      "name": "My Agents",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "license": "MIT",
+      "description": "Usage, limits, pace, and prepaid balances for every AI agent and provider in a native Omarchy bar panel.",
+      "kinds": [
+        "bar-widget"
+      ],
+      "activation": "on-demand",
+      "entryPoints": {
+        "barWidget": "Panel.qml"
+      },
+      "barWidget": {
+        "displayName": "My Agents",
+        "description": "One bar icon and one panel: rate-limit meters with pace, today, the last week, and the all-time model breakdown for every subscription.",
+        "category": "AI",
+        "aliases": [
+          "agents",
+          "model-usage"
+        ],
+        "allowMultiple": false,
+        "defaults": {
+          "providers": {
+            "claude": {
+              "enabled": true
+            },
+            "codex": {
+              "enabled": true
+            },
+            "grok": {
+              "enabled": true
+            },
+            "kimi": {
+              "enabled": true
+            },
+            "cursor": {
+              "enabled": true
+            },
+            "grokbot": {
+              "enabled": true
+            },
+            "copilot": {
+              "enabled": true
+            },
+            "muse": {
+              "enabled": true
+            },
+            "agy": {
+              "enabled": true
+            },
+            "kimchi": {
+              "enabled": true
+            },
+            "hermes": {
+              "enabled": true
+            },
+            "devin": {
+              "enabled": true
+            },
+            "vibe": {
+              "enabled": true
+            },
+            "qwen": {
+              "enabled": true
+            },
+            "opencode": {
+              "enabled": true
+            },
+            "zai": {
+              "enabled": true
+            },
+            "ollama": {
+              "enabled": true
+            },
+            "minimax": {
+              "enabled": true
+            },
+            "openrouter": {
+              "enabled": true
+            },
+            "deepseek": {
+              "enabled": true
+            },
+            "fireworks": {
+              "enabled": true
+            },
+            "synthetic": {
+              "enabled": true
+            },
+            "local": {
+              "enabled": true
+            }
+          },
+          "refreshIntervalSec": 900,
+          "syncMode": "Off",
+          "syncDir": "",
+          "syncFileName": "",
+          "syncDeviceId": ""
+        },
+        "schema": [
+          {
+            "key": "refreshIntervalSec",
+            "type": "integer",
+            "label": "Refresh interval (seconds)",
+            "min": 30,
+            "max": 3600,
+            "step": 30,
+            "defaultValue": 900
+          },
+          {
+            "key": "syncMode",
+            "type": "enum",
+            "label": "Synced aggregation",
+            "options": [
+              "Off",
+              "On"
+            ],
+            "defaultValue": "Off",
+            "description": "When On, write this machine's local usage snapshot and merge snapshots from other machines."
+          },
+          {
+            "key": "syncDir",
+            "type": "path",
+            "label": "Sync folder",
+            "defaultValue": "",
+            "description": "A folder synced by Syncthing, Dropbox, rsync, etc."
+          },
+          {
+            "key": "syncFileName",
+            "type": "string",
+            "label": "Snapshot file name",
+            "defaultValue": "",
+            "description": "Optional. Defaults to <hostname>.json. Use a different file name on each machine, such as laptop.json or desktop.json."
+          },
+          {
+            "key": "syncDeviceId",
+            "type": "string",
+            "label": "Device id",
+            "defaultValue": "",
+            "description": "Optional stable device name used inside synced aggregate snapshots."
+          }
+        ]
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.agents"
+      }
+    },
+    "files": {
+      "Agent.qml": "fc37dfb3363e3212becc999785969b31d2dedcb32df9b776dd0fa9bbbed30a83",
+      "Main.qml": "5811977c29f2068f7941fc722441823eceef9f8995b3448da5d7bcb763749c32",
+      "Panel.qml": "eba6ec6231d272aa127f31af468f2eb2bab0dfde9e11a70f50f936c684c07a29",
+      "README.md": "ef6417ad6e081612c73e3c13193e5fd8fbc73160de03998823ddb40653c9f822",
+      "collectors.py": "6d46504c8cd4210f46c98e1288f1d5addbeaca63b52d7b43ec2e53db210bd9bf",
+      "manifest.json": "b1eb79696d5d6b8e20887406473a48937e7ef676011551992b64ad615c6607f8",
+      "assets/agy-light.svg": "b671d7578809c2a052468b561431896c4ff192012a7c706aba9a366098711ecb",
+      "assets/agy.svg": "c2102431a352b6aa4c6ea5153e954f2b90ca8f6028c8672d54190a428d3da846",
+      "assets/claude.svg": "0df6dad23995f5a76c6db8cc2a4e646ff45bd7a0626ef98662a7025646e5eea1",
+      "assets/codex-light.svg": "dc510dda4e7e43c214e6a5a023b9909bc645b45f2fdde537ee6d6b09f1bbc111",
+      "assets/codex.svg": "f1aeeba6d631feca31129bbc06ac7f813078d6bafa3837061e0ead173f36b857",
+      "assets/copilot-light.svg": "222632f8fcca10026089e4a48d2ecde6ace417a69e74d5fd82e29f211901287a",
+      "assets/copilot.svg": "82956c462c6ad156b3a0107f7f3d981caa7a322bcc13953dc6354925a49f7360",
+      "assets/cursor-light.svg": "3850ebeef95a2ac338557f63dfb2a719398393805eda0a424964083aa4c4e501",
+      "assets/cursor.svg": "df73dcda9b5b0a3178d8f43f553d309b1f745d9cb5966e7dff748aee74f4dcbd",
+      "assets/deepseek.svg": "011b1b880be41835a87c0e660c69e4b72464d6376926d0391a16ac9b0660917f",
+      "assets/devin-light.svg": "9d92781d173d3f9e050263900a8bc1e53ff049191eeb1d5e47b8e239fe1f2793",
+      "assets/devin.svg": "83f5c7a7d21db45401e1088f6baa0baa1f0ed77fb9081911a18749da7f299cc6",
+      "assets/fireworks.svg": "fcf0a4f19c49f99d8aa09804f20d357ddfc61f2b12d43335ca01f882388b475c",
+      "assets/grok-light.svg": "c7f8a25f619e38f125b9fcd5adeba267b92ef753cd15369427c08ce4f0b13aad",
+      "assets/grok.svg": "3c5a8033a232fa5990cc13fc19f3907ad54f2af4ed593862b5d6bc39c7ea13b9",
+      "assets/grokbot-light.svg": "cb9285bb9d0c5c9a68530bf0c3a02cbf1f7493ec7a44cf32cc05636b29c26e83",
+      "assets/grokbot.svg": "c08c0109f66b093a10790d8a2856543f32616c4f588f2b4237634a260f9af3af",
+      "assets/hermes-light.svg": "4aee09c155271e82c111fb343f750fc2dc40243e1e7332f9d55f06765aeb0bff",
+      "assets/hermes.svg": "403be9b0d798a3efe8b53139110733da62933089cc878ecc1f5e80814a3756fe",
+      "assets/kimchi.svg": "1454f0c27bfa477d1483e91f8aa2b823c12545a98fa443ddf46a5a1945876a9d",
+      "assets/kimi-light.svg": "2c88451b6ea910632ac5566aa5385caff8a748f607e4fb215873746f7b1636d8",
+      "assets/kimi.svg": "685169e41b0320b3f70d017dcd62186e143a6614a18b2f501a05da05a3c48e9d",
+      "assets/minimax-light.svg": "cf594b35380648d98ac85c4ef8629ab6565d9f516ad936b5ed90f5c4002d6e49",
+      "assets/minimax.svg": "75c24ab2e254cfb21172a2a1c891592d97fabd3c93fa0d70d3be3fbcba273398",
+      "assets/muse-light.svg": "41d251380473b6951c089504383903eeb963a94ab0b44534c66c94a3abe79e9c",
+      "assets/muse.svg": "b0e42adc765a7859a7d66f3d920cc6f5e782e5344ab54d5028e8f96fe8fc50bd",
+      "assets/ollama-light.svg": "374ba3e20a0d655a14953882c4dc97c1269f81893f3637c2a76ef7a4c2a49e7c",
+      "assets/ollama.svg": "ebfea4f514a33fd6a256bd429ae2c772c04fcfe916ae9957a485837edb37ca9f",
+      "assets/opencode-light.svg": "5eeb3a5f14dbbccc03111296ecfd3cd05cc98844150d4f9d77ba921847953380",
+      "assets/opencode.svg": "4e84f87aa7bc2a5f8a72eeb08d3d4f1836b422189256d0bd5e7bfabc830d7ed0",
+      "assets/openrouter-light.svg": "2093059ca158af3b439cee97af5c002feef3728b7e022c89fe8401b25c702f4b",
+      "assets/openrouter.svg": "2f42100bf86ffbb353e22f826646b94ebd95906d3e600d47dd39d7eea82fc14d",
+      "assets/qwen.svg": "67957f462df8b728330736d6d8a80c9e71a8873613a23371ae02a1bfbcac9ecd",
+      "assets/synthetic-light.svg": "d3dde35722107822e9adca4e1ac6fb6d6c74563b6035d52c378003400dc3215e",
+      "assets/synthetic.svg": "597c2c9fd0774a3511c402b82ae87fb6037bdaee48e5abb9040f16f65f802bf2",
+      "assets/vibe.svg": "7553e75f77ed2ddb86bbb368d3cc4b225f1ad11c5d145740088c6a8d21c0606c",
+      "assets/zai-light.svg": "a40379428926e7750b92aa0706cccfbf82bd82292a07aed67d7e2465c3d69096",
+      "assets/zai.svg": "d04be8624e2e7b853c3fc8bce9c051ef9123fb9c1793dc068bd49988b23fe807"
+    }
+  },
+  {
+    "id": "stark.audio",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.audio",
+      "name": "My Audio",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "Volume slider, output picker, per-app mixer",
+      "kinds": [
+        "bar-widget"
+      ],
+      "entryPoints": {
+        "barWidget": "Panel.qml"
+      },
+      "barWidget": {
+        "displayName": "My Audio",
+        "description": "Volume slider, output picker, per-app mixer",
+        "category": "Audio",
+        "allowMultiple": false
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.audio"
+      }
+    },
+    "files": {
+      "Model.js": "cac32aa2c2a2449223f64bfd935be360b4f61eb8112d4f62dc21270447eaee1b",
+      "Panel.qml": "558f59f673d49bb77ebb7f08995f41f897bb3f2b4da48b0900a1196386c025fe",
+      "manifest.json": "bb9657fad4c210c9068782ccd7cdd855968fb31723dee0a1c82eb90eb86c9e8b"
+    }
+  },
+  {
+    "id": "stark.bar",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.bar",
+      "name": "My Bar",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "Status bar with widgets",
+      "kinds": [
+        "bar"
+      ],
+      "entryPoints": {
+        "bar": "Bar.qml"
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.bar"
+      }
+    },
+    "files": {
+      "Bar.qml": "03a572e8d7b30c2bc4201cf0a19fc9f11864ce6f054a53b26d1915cb843345a6",
+      "BarModel.js": "9394b2ca8256518bbe04a8b11f4b740e20c2d9c0859372eda475dc33200471b8",
+      "README.md": "c6ddb79b44a9c7cec51b39e684b0c22b72f6ad7d3faf342b36706fcaa4c9c9b9",
+      "manifest.json": "2753373de7111f6928927d9b5c8477bc9f01a39d39e15a5fa02754793a378491",
+      "BarShape.qml": "5a0f3707d30caf0cae4bc44d4d3ad65ad4f6375c1650faaacba84c9785812744",
+      "Slant.js": "8ef6527d09ffd1a2899e110abf4703a600ccc0d89ae0bf1c5179015b8d07dc3b",
+      "VYNTARIS-LICENSE": "fb981668c18a279e285fc4d83fba1e836cc84dd4daa73c9697d3cfd2d8aca6e0",
+      "NotchHost.qml": "e0404cb3a9d9cf04bac0d060f1929ca336191c9b06d458c6806b9a2a1ac7d260",
+      "indicators/Dnd.qml": "f8621b970c192426f32ca015bfd2f6d327f518997f6ddff0f7043bdb532cfe9f",
+      "indicators/NightLight.qml": "c20e31acbe0b763dbb6bd46f215d16fd74e1d5f7d8eb017e80dc39eb5e9ac838",
+      "indicators/PasswordlessSudo.qml": "3c6fc9cb15081ca8bebbce3f712c1370969b7fe3b04520a73593b8e09c8a9b4e",
+      "indicators/Reminder.qml": "51cef554abf4b4b28692cee73add20e2c34bd9883bfed74be10b5334d73f7c7b",
+      "indicators/RemoteSession.qml": "c464abb97062bea847c596e26e1f92e0a9de0487fbcc855bcaf91ad400359b1b",
+      "indicators/ScreenRecording.qml": "c68a8656764ccea79d052531c2f8603d36f815185bebf183f8bb80c3f18e1247",
+      "indicators/StayAwake.qml": "80805a48636b7037649a905795e7fc57fc431618e3cda629548314f4cce2fa68",
+      "widgets/ActiveWindow.manifest.json": "b329d7bbec36086c2f72f904029229b71d4c3ad3afb96ce0ff3cf05b9eda9b80",
+      "widgets/ActiveWindow.qml": "c14da43b569c4a028f0c51eb176ba9a9fe12701b705f3fa6569555ecdabf54ee",
+      "widgets/Indicators.manifest.json": "b192e657959b2d5639cbccb2d59045723adc626a7760d358ed9df53643657228",
+      "widgets/Indicators.qml": "1425a32ee64630d2ce083aba016209b4367b1d451d307549a05db596f9916893",
+      "widgets/KeyboardLayout.manifest.json": "7824e5e77a583edf7fba44d7e4f065a082fa96909dd6dbe1dd2fd9f0911620bd",
+      "widgets/KeyboardLayout.qml": "3717d02d5dfd43892283706a7bee78c85ba4f6c51202badd45a25dd96f521992",
+      "widgets/KeyboardLayoutModel.js": "d61308b95a628cdf3f3200683690799bd301a543c8d2309328258d6fe144d79d",
+      "widgets/Microphone.manifest.json": "58f9f212d3a840bc4ebe276076ec37ba19977f96808e8a8c2ce00aa2a35b8055",
+      "widgets/Microphone.qml": "2beeac535ef93a9680c8f6528c693c1c7b32f5aece75f06d9e86419838b363e9",
+      "widgets/Spacer.manifest.json": "760ef0a8c95587453907b621ca04ec7349311a154fb5d1b86bac9b1fa3a370fa",
+      "widgets/Spacer.qml": "85abd1cd06755e57194b86d30df9c31e7521e5c91f5a663d9cd6420b9e91c545",
+      "widgets/SystemUpdate.manifest.json": "daf0806360b5c8ffd71a0d08d9ef0e0f69048ea85c4b10f45b4a8e30b4601328",
+      "widgets/SystemUpdate.qml": "20b4b7b1e8e5a9e7ac87eac64d7c23edf98cbad72072bf64d88b35c260830950",
+      "widgets/Tray.manifest.json": "ece62a8a728bf5903b344f293711379df62088b94532237ca42f432c84230fb2",
+      "widgets/Tray.qml": "bb0a6d360d885df58ac8ab44ff1a3668a3d913c36257a15e6282c4720dba8d2f",
+      "widgets/TrayModel.js": "e2a06e56334a37f41f057ba7ef128a870b9b37e6e489dd502dfde979b5af7247",
+      "widgets/Workspaces.manifest.json": "4f381b91cd9e6306870e7ac03ce10ad20248178b45c7cd5d738fda6924df5da3",
+      "widgets/Workspaces.qml": "a320502697738957ad4e04ce68ce06cd9163e8b2fddccac72bc888224778d96d",
+      "menu-bridge/qmldir": "89d9c6715a3fd8e17ea8286918088fa6fcde0ad5a387bef7d9be47075d60f6ab",
+      "menu-bridge/Bridge.qml": "1496759e665432cc278dfc5e7affe0bcdcf6c1221b2c1fe356176b3efb9eb0a6"
+    }
+  },
+  {
+    "id": "stark.bluetooth",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.bluetooth",
+      "name": "My Bluetooth",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "Bluetooth device list with connect/disconnect",
+      "kinds": [
+        "bar-widget"
+      ],
+      "entryPoints": {
+        "barWidget": "Panel.qml"
+      },
+      "barWidget": {
+        "displayName": "My Bluetooth",
+        "description": "Bluetooth device list with connect/disconnect",
+        "category": "Network",
+        "allowMultiple": false
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.bluetooth"
+      }
+    },
+    "files": {
+      "Model.js": "b34f3259c6553f20ce37619d2f390cd3293303266f89f2a6df0b6810da384417",
+      "Panel.qml": "e2cf2878dce8a0de154b5acbb4f6e95a6e9c48d67898b69091376eb2f2317674",
+      "manifest.json": "c2649b6c3a0d77c1aaa8cef7147391c26a7fe918bdb8a58bb0318a2e584cbd43"
+    }
+  },
+  {
+    "id": "stark.clock",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.clock",
+      "name": "My Clock",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "Date/time label with a calendar popup",
+      "kinds": [
+        "bar-widget"
+      ],
+      "entryPoints": {
+        "barWidget": "BarWidget.qml"
+      },
+      "barWidget": {
+        "displayName": "My Clock",
+        "description": "Date/time label with a calendar popup",
+        "category": "Time",
+        "allowMultiple": false
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.clock"
+      }
+    },
+    "files": {
+      "BarWidget.qml": "7019f16b4e02116e731a1623296332148cc87c585f5617b150ea0e3022c6b3e4",
+      "Model.js": "8a2645eb75b22d4ee4b278e19b5092a91638f4b3af9a704999f7cd86d7f1091e",
+      "Panel.qml": "4d0a313c45b0c0ee194883cdb5595dc0a9018e20fcc4489e83d53fdfc3c08e25",
+      "WallClock.qml": "369c0c5313a56b9963e6b1853ebf9294b666c3ec9aa9fa819f3becb024a5261d",
+      "manifest.json": "7ec85987b39b95eb95bf73940bd6962975f9eebbe8e6455bff266dd45a0c4fd6"
+    }
+  },
+  {
+    "id": "stark.dock",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.dock",
+      "name": "My Dock",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "App dock shown on floating workspaces",
+      "kinds": [
+        "service"
+      ],
+      "entryPoints": {
+        "service": "Dock.qml"
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.dock"
+      }
+    },
+    "files": {
+      "AppGrid.qml": "84469c3010bacedcc98f370ac075f6568c0796310eaafa49365e126bd5b78385",
+      "Dock.qml": "58a43f24e158ed89614c77d4a018bfeca1ebf2d45d1b157e0b8bec49fd4299db",
+      "DockModel.js": "d7d1dbb871e3fc2eff454775750811b80f54259ab51ca4e5653ac7f589285c87",
+      "DockWindow.qml": "7fd7fb9442c2f0c13036d1c97958e9a935529eafb2a201b14336fc897da76308",
+      "manifest.json": "07754f636364e9825020c1acb0e4d7d630c26f2d65c046470f02157ff7125e1b"
+    }
+  },
+  {
+    "id": "stark.elsewhen",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.elsewhen",
+      "name": "My Elsewhen",
+      "version": "1.1.0",
+      "author": "Jason Fried",
+      "license": "MIT",
+      "description": "A world clock for the Omarchy shell: the time in several cities at once, with a spinnable globe.",
+      "kinds": [
+        "bar-widget"
+      ],
+      "entryPoints": {
+        "barWidget": "Panel.qml"
+      },
+      "barWidget": {
+        "displayName": "My Elsewhen",
+        "description": "A world clock: one row per city, and a globe.",
+        "category": "Time",
+        "aliases": [
+          "worldclock",
+          "world clock",
+          "timezones"
+        ],
+        "allowMultiple": false,
+        "defaultSection": "right",
+        "defaults": {
+          "offsetMode": "home",
+          "units": "",
+          "globeEnabled": true,
+          "smoothMotion": true
+        },
+        "schema": [
+          {
+            "key": "hour24",
+            "type": "boolean",
+            "label": "24-hour time (unset follows the system)"
+          },
+          {
+            "key": "offsetMode",
+            "type": "string",
+            "label": "Row offsets: home (distance from you) or utc",
+            "defaultValue": "home"
+          },
+          {
+            "key": "units",
+            "type": "string",
+            "label": "Temperature units (F or C; blank follows the system)",
+            "defaultValue": ""
+          },
+          {
+            "key": "globeEnabled",
+            "type": "boolean",
+            "label": "Globe mode (tap the hero globe)",
+            "defaultValue": true
+          },
+          {
+            "key": "smoothMotion",
+            "type": "boolean",
+            "label": "Drop labels and detail while the globe moves",
+            "defaultValue": true
+          }
+        ]
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.elsewhen"
+      }
+    },
+    "files": {
+      "Arc.js": "b9d2046868e68f8551bce8a2921cae9cbb546f323fe93f672667e09685daf014",
+      "ArcText.qml": "3d787c9650553aaba1eb05842de9757bf08abf0f5218bd42db1c86500dd4e3d2",
+      "Avatar.qml": "13146573e02ef4ccc4147abd728611990a587ec3f5f09cce6ff0f8aba61d94bd",
+      "CityMatches.qml": "5f142966d4263f715ace80e2b853a510b84502be5dff3f56997bdd8d0aa70207",
+      "CityRow.qml": "b3691d4eb95de0ab857bbd4480914d7e02210b817ba9e595b3e9a3da92b0fcd5",
+      "CitySearch.qml": "651d2624c21f6e88b16d813990b206e6c7ad296bb059e363f2272e4e9db2aa2e",
+      "DaylightStrip.qml": "6dc85bee90f1e15ed70fb65a7ee535964b80dec1deacb649e18ba0c75bec4bb6",
+      "Globe.qml": "1b11bee9a7778b2068f07880fabd3e16a6769a96569562155ab14915919bd942",
+      "GlobeFooter.qml": "a1a320e19df71eedcca8b6916db93a62da8afabf3db15f16369a0b1198d61d6d",
+      "GlobeModel.js": "18d1609e5b7c978709bed63d3178712cc2d934d7106ce8d00adf9a6e431af957",
+      "Greetings.js": "d65ca5ab3ccf96ad38d7e5e1543a6a50164c32d342792ef34c1d9987a93b9afa",
+      "HeroTitle.qml": "22218a8ce8250f11ae147ce2e73e8275e2418e56a23c06b43d92fe71f4fda6b5",
+      "MiniGlobe.qml": "83820872f03eba4c0e54bab2dd5636eeb66413aaa6dd261a33bdbeea52f42195",
+      "Model.js": "669cbfe9b28e65bea3673a003f771c1130a9ff0a8df1767dd385cf381f864c84",
+      "MoonDot.qml": "dc0eff75871eac3e3b99067b92093bb28eeb667ce5b261b34261b8f5340d7378",
+      "Panel.qml": "7959ac8d064df8458dfcf1d280b887b9f1fb355581830d291d7a8665e8dda523",
+      "Sun.js": "0b083eb24757513bfd06e4929aa85b41b9802a3212ad9575c5fa92a4676179bf",
+      "cities.json": "6e6127b929286d37b0adac0d2d1038a9bf9f32a8fc7e0a492bf8142286a9ad9a",
+      "world.json": "b2aa85ab1f671ca76f1514b6f9e92b9f19ca2b0897b7b903abb7d31e44687ee6",
+      "manifest.json": "5d005ec244b80e88360974b6665a16f706dff931c3e5970c51c63a866830d69b"
+    }
+  },
+  {
+    "id": "stark.menu",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.menu",
+      "name": "My Omarchy menu",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "Quickshell-powered Omarchy command menu",
+      "kinds": [
+        "menu",
+        "bar-widget"
+      ],
+      "keepLoaded": true,
+      "entryPoints": {
+        "menu": "Menu.qml",
+        "barWidget": "BarWidget.qml"
+      },
+      "barWidget": {
+        "displayName": "My Omarchy menu",
+        "description": "Launches the Omarchy menu",
+        "category": "Compositor",
+        "allowMultiple": false
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.menu"
+      }
+    },
+    "files": {
+      "BarWidget.qml": "12e95ff07365eeb60d102d9a4d5f07d65fed5f3eb3f9b9b25c6ac698e0e5b9ee",
+      "Menu.qml": "ec60d2ac5cc2e93f0a943edf6e726b544566bfd06f20a28d54fdcd3601346d85",
+      "MenuModel.js": "52178e52dddd6c553b4406c2a2a55122f3d55c632ef0075d923da84603e06caa",
+      "manifest.json": "92055672c03d90d74088180bb1e195ad8c73e8a963c1ef3674d235928e48fd73"
+    }
+  },
+  {
+    "id": "stark.monitor",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.monitor",
+      "name": "My Display",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "Brightness slider and laptop display controls",
+      "kinds": [
+        "bar-widget"
+      ],
+      "entryPoints": {
+        "barWidget": "Panel.qml"
+      },
+      "barWidget": {
+        "displayName": "My Display",
+        "description": "Brightness slider and laptop display controls",
+        "category": "System",
+        "allowMultiple": false
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.monitor"
+      }
+    },
+    "files": {
+      "Model.js": "4374daa9cf57e7428dadfd7b0156ee8cef75b32a934ddd82b30dc4d0bf6d7c5c",
+      "Panel.qml": "dbf086445011708a7853c6629681e62567135ed1696cb72dbc687d6aeaf875c5",
+      "manifest.json": "e02944b053443f6833453bc8b5232d8772304b94f444710f05fe024a00569374"
+    }
+  },
+  {
+    "id": "stark.network",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.network",
+      "name": "My Network",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "Wi-Fi list and connection state",
+      "kinds": [
+        "bar-widget"
+      ],
+      "entryPoints": {
+        "barWidget": "Panel.qml"
+      },
+      "barWidget": {
+        "displayName": "My Network",
+        "description": "Wi-Fi list and connection state",
+        "category": "Network",
+        "allowMultiple": false
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.network"
+      }
+    },
+    "files": {
+      "Model.js": "1562b0752495f693ef8231148f5e6d99c375d120852e9c312a2b47067aa9a8fa",
+      "Panel.qml": "9048037c898097a1376db9f9efec31183b8f1ac1690840fc4b63eeff1739afa9",
+      "manifest.json": "a37b217820c68322405c6e82eecd2b87be2fea71a0cef9ab1d30424ae1f7a858"
+    }
+  },
+  {
+    "id": "stark.power",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.power",
+      "name": "My Power",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "Battery, power profile, and system stats",
+      "kinds": [
+        "bar-widget"
+      ],
+      "entryPoints": {
+        "barWidget": "Panel.qml"
+      },
+      "barWidget": {
+        "displayName": "My Power",
+        "description": "Battery, power profile, and system stats",
+        "category": "System",
+        "allowMultiple": false
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.power"
+      }
+    },
+    "files": {
+      "Model.js": "0a7f42b18dcdea6da54e02813f0fe9ff57e355f16e7a9caba1ba63913420ca43",
+      "Panel.qml": "ac5e89a0c3bb3994264d1f44a3d44f99634efef96877c70b73a91eaa869a0c86",
+      "manifest.json": "dc205cff06716dca75dbe541a409ca28bef96dbd6cdb7244296a1d74de9c80af"
+    }
+  },
+  {
+    "id": "stark.system-monitor",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.system-monitor",
+      "name": "My System Monitor",
+      "version": "1.5.3",
+      "author": "Harshith",
+      "license": "MIT",
+      "homepage": "https://github.com/Harshith292002/omarchy-system-monitor",
+      "description": "A low-overhead system dashboard for the Omarchy bar.",
+      "kinds": [
+        "bar-widget"
+      ],
+      "activation": "on-demand",
+      "entryPoints": {
+        "barWidget": "Panel.qml"
+      },
+      "barWidget": {
+        "displayName": "My System Monitor",
+        "description": "CPU, memory, GPU, temperature, network, and disk activity.",
+        "category": "System",
+        "aliases": [
+          "sysmon",
+          "system-stats"
+        ],
+        "allowMultiple": false,
+        "defaultSection": "right",
+        "defaults": {
+          "barMode": "Adaptive",
+          "closedRefreshSec": 5,
+          "openRefreshSec": 2,
+          "warningPercent": 80,
+          "criticalPercent": 95,
+          "networkInterface": ""
+        },
+        "schema": [
+          {
+            "key": "barMode",
+            "type": "enum",
+            "label": "Bar display",
+            "options": [
+              "Adaptive",
+              "CPU",
+              "Memory",
+              "GPU",
+              "Temp",
+              "Both",
+              "Icon"
+            ],
+            "defaultValue": "Adaptive"
+          },
+          {
+            "key": "closedRefreshSec",
+            "type": "integer",
+            "label": "Closed refresh interval (seconds)",
+            "min": 2,
+            "max": 60,
+            "step": 1,
+            "defaultValue": 5
+          },
+          {
+            "key": "openRefreshSec",
+            "type": "integer",
+            "label": "Open refresh interval (seconds)",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "defaultValue": 2
+          },
+          {
+            "key": "warningPercent",
+            "type": "integer",
+            "label": "Warning threshold",
+            "min": 50,
+            "max": 95,
+            "step": 1,
+            "defaultValue": 80
+          },
+          {
+            "key": "criticalPercent",
+            "type": "integer",
+            "label": "Critical threshold",
+            "min": 60,
+            "max": 100,
+            "step": 1,
+            "defaultValue": 95
+          },
+          {
+            "key": "networkInterface",
+            "type": "string",
+            "label": "Network interface",
+            "defaultValue": "",
+            "description": "Leave empty to follow the default route."
+          }
+        ]
+      },
+      "omarchy": {
+        "clonedFrom": "harshith.system-monitor"
+      }
+    },
+    "files": {
+      ".gitignore": "600103bdf71f74ab50a00f767656e1577da2c109d1c54ae54cb38e967b23881d",
+      "CHANGELOG.md": "02cf26a60850bf6540d7a048fa61cd598fa7e96e6ae0b2c219b9d64c6e8a80f7",
+      "LICENSE": "74c2ef68b8defac05edd0bb6382228c76751a750fe5cb9757fca9efb07a1ae14",
+      "Metrics.js": "99046f1ef825bcff81544aff0c9d6eaa45d0fcbac650443bf723875d58d480b9",
+      "Metrics.qml": "214c8c85534bdc790f6e9ba6f269d9e2983fc8a77caf550aec31e34f017a9906",
+      "Panel.qml": "bf3c90e96f017f059bc18193615a780b08cbfbcc48bbd2e6a2256daf74d53c7a",
+      "README.md": "c18d5e63d49bd48709991f5ef3e7e4fe72a41e2e2bfe44c94c75f768d02172f4",
+      "Sparkline.qml": "d4c6bde60eda857221f34491d06bc0ef2a083cb7d014d348d85dea412eb64b59",
+      "discover-sensors.sh": "237eb491dd046e3347699a7d2f1a0dd01de9abbc86cf4be08c2f1b20448d1e91",
+      "manifest.json": "37f7e0bf988888fd830b9d89a9ade0c6c049c7d6ae5dd338548b9d33a8b8677e",
+      "preview.png": "70eb57a55ffb19abc83ecfac30116b7c8cbd8d931ed39d92cb95e0c0b1da92e8",
+      "tests/discovery.test.sh": "00d1f1df8f445aa62cba623bb0a41347e613fd94666f8cff2c1da7b8cace4319",
+      "tests/model.test.js": "bd76ff3dd0ac9f1fcc1485ea50631660f3318b6adafb325c0ed753bfabd5226b",
+      "docs/screenshots/asahi-sensors-collapsed.png": "f916a1def0291dc329e4ff45bfdfdb6cf0a585f059d87c68ff73886d95f33333",
+      "docs/screenshots/asahi-sensors-expanded.png": "970c18d7178c0575faba25377b443eb9140644c90153d848eac1a965b2982b97",
+      "docs/screenshots/system-monitor-panel.png": "9309ed992776e66d37298698d63da015e6eca9c630a94b5b48d17b9cb1542616",
+      ".github/workflows/validate.yml": "d7163600df8ddce66c265e9d5100f54a28926f97c8d9f4d78bceab603aeb95f6"
+    }
+  },
+  {
+    "id": "stark.visualizer",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.visualizer",
+      "name": "Stark Media Visualizer",
+      "version": "1.0.0",
+      "author": "Stark; adapted from Vyntaris",
+      "license": "GPL-3.0-only",
+      "description": "Audio-reactive media bars in the Stark notch.",
+      "kinds": [
+        "bar-widget"
+      ],
+      "entryPoints": {
+        "barWidget": "BarWidget.qml"
+      },
+      "barWidget": {
+        "displayName": "Media Visualizer",
+        "category": "Media",
+        "allowMultiple": false,
+        "defaultSection": "center"
+      }
+    },
+    "files": {
+      "Visualizer.qml": "a8ebf31ca0485fefef5bc656518ef57dbebafb532b7f8acfced7490fe3a7d1bb",
+      "qmldir": "d65e04f660f1e3577e1880847a03c4ee31bab834475c5f47addafd78c2335a7c",
+      "Bars.qml": "e40442b4ff2b8f45d9a7619d8042a2de3bc498dba5342a691e3d6c8d75e1e175",
+      "LICENSE": "fb981668c18a279e285fc4d83fba1e836cc84dd4daa73c9697d3cfd2d8aca6e0",
+      "manifest.json": "a0e6c5d14c231b7837f06f12bbec1d22bdc2d3fcbf2d887146f61721992be73f",
+      "BarWidget.qml": "6b141e671879220f9a3ffc6db8e455c6b2c8b27ead398c3886a249e82b3618a8",
+      "FocusModel.js": "3d509b4e3062c0359fab6cc31ee9c82cbad7499154318b63269a62a8b97012a4"
+    }
+  },
+  {
+    "id": "stark.weather",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.weather",
+      "name": "My Weather",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "Weather pill with detail popup",
+      "kinds": [
+        "bar-widget"
+      ],
+      "entryPoints": {
+        "barWidget": "BarWidget.qml"
+      },
+      "barWidget": {
+        "displayName": "My Weather",
+        "description": "Weather pill with detail popup",
+        "category": "Info",
+        "allowMultiple": false,
+        "settingsForm": "weatherSettings"
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.weather"
+      }
+    },
+    "files": {
+      "BarWidget.qml": "62b27ab546f0beb81e2d7b334f7b2b3753702dd3ca49572dc3e223e89485e99e",
+      "Model.js": "3e7dee236b287a6b58fdb1ef9597a2e0bdbe014473795147e47ed97ff78ce579",
+      "Panel.qml": "647f1d58bd0f1debe7c8384a959d4502fcc1c41921e3080499764e2d53873d12",
+      "manifest.json": "c705c2c866423d795b03b8248c74596a3ce39064b63868f31035d5f8350ce6c8"
+    }
+  },
+  {
+    "id": "stark.wifiqr",
+    "manifest": {
+      "schemaVersion": 1,
+      "id": "stark.wifiqr",
+      "name": "My Wi-Fi QR",
+      "version": "1.0.0",
+      "author": "Omarchy",
+      "description": "Share the connected Wi-Fi network as a scannable QR code",
+      "kinds": [
+        "panel"
+      ],
+      "entryPoints": {
+        "panel": "Panel.qml"
+      },
+      "omarchy": {
+        "clonedFrom": "omarchy.wifiqr"
+      }
+    },
+    "files": {
+      "Model.js": "a5e771a51c034aaa84c46ebf3b6740eb58d5cbf0d14b3ae62dcf73a5f7bde1a1",
+      "Panel.qml": "17f63f730051e8a0f26d8b7eff1fe688664727f7ca8cb5cb8644af15aebf3e2e",
+      "manifest.json": "88f34aa1a056886db720e59b25e6fb582a3230b3b17fcd3855230dc4e5d82c06"
+    }
+  }
+]

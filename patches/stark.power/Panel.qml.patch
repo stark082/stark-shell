@@ -1,0 +1,72 @@
+--- Panel.qml
++++ Panel.qml
+@@ -6,9 +6,40 @@
+ import qs.Commons as Commons
+ import qs.Ui
+ import "Model.js" as Model
++import "../stark.bar/menu-bridge" as Integration
+ 
+ Panel {
+   id: root
++
++  readonly property string embeddedKind: "power"
++  readonly property bool embedded: Integration.Bridge.host !== null && Integration.Bridge.host.bar.position === "top"
++  readonly property real embeddedWidth: panel.contentWidth
++  readonly property real embeddedHeight: panel.contentHeight
++  property Item originalContentParent: null
++  Binding {
++    target: panel.loadedContent
++    property: "visible"
++    value: root.opened
++    when: root.embedded && panel.loadedContent !== null
++  }
++  function open() {
++    Integration.Bridge.selectHost()
++    if (!root.embedded && originalContentParent && panel.loadedContent)
++      panel.loadedContent.parent = originalContentParent
++    root.controller.show()
++  }
++  function close() { root.controller.hide() }
++  function syncEmbedded() {
++    if (!root.opened || !root.embedded) return
++    panel.ensureContent()
++    var content = panel.loadedContent
++    if (!content) return
++    if (!originalContentParent) originalContentParent = content.parent
++    var host = Integration.Bridge.host
++    host.openExtra(root)
++    content.parent = host.extraSurface
++    Qt.callLater(function(){ if (root.opened) content.forceActiveFocus() })
++  }
+   moduleName: "omarchy.power"
+   ipcTarget: "omarchy.power"
+   // manageIpc: false so this panel can own the single IpcHandler the target
+@@ -193,6 +224,7 @@
+   }
+ 
+   onOpenedChanged: {
++    {
+     if (opened) {
+       if (!batteryPresent) {
+         // Deferred: closing here writes the very property whose change
+@@ -207,6 +239,9 @@
+       profileIndex = idx >= 0 ? idx : 0
+       cursorActive = false
+     }
++  }
++    if (root.opened && root.embedded) root.syncEmbedded()
++    else if (!root.opened && Integration.Bridge.host) Integration.Bridge.host.extraClosed(root)
+   }
+ 
+   onBatteryPresentChanged: if (!batteryPresent) close()
+@@ -303,8 +338,9 @@
+     anchorItem: button
+     owner: root
+     bar: root.bar
+-    open: root.opened && root.batteryPresent
++    open: root.opened && !root.embedded && root.batteryPresent
+     focusTarget: panel.loadedContent
++    onLoadedContentChanged: if (root.opened && root.embedded) Qt.callLater(root.syncEmbedded)
+     contentWidth: panel.fittedContentWidth(Style.space(380))
+     contentHeight: panel.fittedContentHeight(panel.loadedContentHeight)
+ 

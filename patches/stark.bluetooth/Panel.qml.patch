@@ -1,0 +1,72 @@
+--- Panel.qml
++++ Panel.qml
+@@ -8,9 +8,40 @@
+ import qs.Commons
+ import qs.Commons as Commons
+ import "Model.js" as Model
++import "../stark.bar/menu-bridge" as Integration
+ 
+ Panel {
+   id: root
++
++  readonly property string embeddedKind: "bluetooth"
++  readonly property bool embedded: Integration.Bridge.host !== null && Integration.Bridge.host.bar.position === "top"
++  readonly property real embeddedWidth: panel.contentWidth
++  readonly property real embeddedHeight: panel.contentHeight
++  property Item originalContentParent: null
++  Binding {
++    target: panel.loadedContent
++    property: "visible"
++    value: root.opened
++    when: root.embedded && panel.loadedContent !== null
++  }
++  function open() {
++    Integration.Bridge.selectHost()
++    if (!root.embedded && originalContentParent && panel.loadedContent)
++      panel.loadedContent.parent = originalContentParent
++    root.controller.show()
++  }
++  function close() { root.controller.hide() }
++  function syncEmbedded() {
++    if (!root.opened || !root.embedded) return
++    panel.ensureContent()
++    var content = panel.loadedContent
++    if (!content) return
++    if (!originalContentParent) originalContentParent = content.parent
++    var host = Integration.Bridge.host
++    host.openExtra(root)
++    content.parent = host.extraSurface
++    Qt.callLater(function(){ if (root.opened) content.forceActiveFocus() })
++  }
+   moduleName: "omarchy.bluetooth"
+   ipcTarget: "omarchy.bluetooth"
+   // manageIpc: false so this panel can own the single IpcHandler the target
+@@ -407,6 +438,7 @@
+   }
+ 
+   onOpenedChanged: {
++    {
+     if (opened) {
+       // Adopt a discovery session that is already running — a popout handoff
+       // from another monitor, or one leaked by an instance that could not
+@@ -419,6 +451,9 @@
+       actionFocused = false
+       cursorActive = false
+     }
++  }
++    if (root.opened && root.embedded) root.syncEmbedded()
++    else if (!root.opened && Integration.Bridge.host) Integration.Bridge.host.extraClosed(root)
+   }
+ 
+   // Another per-monitor instance of this widget whose panel is open, if any.
+@@ -665,8 +700,9 @@
+     anchorItem: button
+     owner: root
+     bar: root.bar
+-    open: root.opened
++    open: root.opened && !root.embedded
+     focusTarget: panel.loadedContent
++    onLoadedContentChanged: if (root.opened && root.embedded) Qt.callLater(root.syncEmbedded)
+     contentWidth: panel.fittedContentWidth(Style.space(380))
+     contentHeight: panel.fittedContentHeight(panel.loadedContentHeight)
+ 

@@ -1,0 +1,10 @@
+--- BarWidget.qml
++++ BarWidget.qml
+@@ -5,6 +5,7 @@
+ BarWidget {
+   id: root
+   moduleName: "omarchy.weather"
++
+ 
+   function injectPanel() {
+     var target = panelLoader.item

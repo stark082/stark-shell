@@ -1,0 +1,62 @@
+--- Panel.qml
++++ Panel.qml
+@@ -4,6 +4,7 @@
+ import qs.Commons as Commons
+ import qs.Ui
+ import "Model.js" as Model
++import "../stark.bar/menu-bridge" as Integration
+ 
+ // The clock's calendar popup: a month grid with ISO week numbers, built to
+ // sit beside the weather panel — same hero-over-detail composition, same
+@@ -17,6 +18,27 @@
+ // anchor against.
+ Panel {
+   id: root
++  readonly property bool embedded: Integration.Bridge.host !== null && Integration.Bridge.host.bar.position === "top"
++  readonly property real embeddedWidth: panel.contentWidth
++  readonly property real embeddedHeight: panel.contentHeight
++  property Item originalContentParent: null
++  // Measure the lightweight calendar before its first notch transition.
++  Component.onCompleted: Qt.callLater(function(){panel.ensureContent()})
++  function syncEmbedded() {
++    if (!root.opened || !root.embedded) return
++    panel.ensureContent()
++    var content = panel.loadedContent
++    if (!content) return
++    if (!originalContentParent) originalContentParent = content.parent
++    var host = Integration.Bridge.host
++    host.openCalendar(root)
++    content.parent = host.calendarSurface
++    Qt.callLater(function(){ if (root.opened) content.forceActiveFocus() })
++  }
++  onOpenedChanged: {
++    if (root.opened && root.embedded) root.syncEmbedded()
++    else if (!root.opened && Integration.Bridge.host) Integration.Bridge.host.calendarClosed(root)
++  }
+   moduleName: "omarchy.clock"
+   ipcTarget: "omarchy.clock"
+   manageIpc: false
+@@ -93,6 +115,9 @@
+   readonly property int gutterWidth: Style.space(14)
+ 
+   function open() {
++    Integration.Bridge.selectHost()
++    if (!root.embedded && originalContentParent && panel.loadedContent)
++      panel.loadedContent.parent = originalContentParent
+     refresh()
+     root.controller.show()
+     // Set after showing, not before: showing hands the popout coordinator
+@@ -255,11 +280,12 @@
+     anchorItem: root.anchorItem
+     owner: root.barIdentity
+     bar: root.bar
+-    open: root.opened
++    open: root.opened && !root.embedded
+     // Anchor under the widget rather than the middle of the bar, so the
+     // popup follows wherever the widget is placed.
+     centerOnBar: false
+     focusTarget: panel.loadedContent
++    onLoadedContentChanged: if (root.opened && root.embedded) Qt.callLater(root.syncEmbedded)
+     contentWidth: panel.fittedContentWidth(Style.space(560))
+     contentHeight: panel.fittedContentHeight(panel.loadedContentHeight)
+ 

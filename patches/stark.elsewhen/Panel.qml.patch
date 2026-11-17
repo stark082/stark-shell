@@ -1,0 +1,76 @@
+--- Panel.qml
++++ Panel.qml
+@@ -5,6 +5,7 @@
+ import qs.Commons as Commons
+ import qs.Ui
+ import "Model.js" as Model
++import "../stark.bar/menu-bridge" as Integration
+ import "GlobeModel.js" as Solar
+ 
+ // A bar button that opens a panel of clocks, one row per city, and zooms into
+@@ -13,6 +14,36 @@
+ // minutes to catch DST.
+ Panel {
+   id: root
++
++  readonly property string embeddedKind: "elsewhen"
++  readonly property bool embedded: Integration.Bridge.host !== null && Integration.Bridge.host.bar.position === "top"
++  readonly property real embeddedWidth: panel.contentWidth
++  readonly property real embeddedHeight: panel.contentHeight
++  property Item originalContentParent: null
++  Binding {
++    target: panel.loadedContent
++    property: "visible"
++    value: root.opened
++    when: root.embedded && panel.loadedContent !== null
++  }
++  function open() {
++    Integration.Bridge.selectHost()
++    if (!root.embedded && originalContentParent && panel.loadedContent)
++      panel.loadedContent.parent = originalContentParent
++    root.controller.show()
++  }
++  function close() { root.controller.hide() }
++  function syncEmbedded() {
++    if (!root.opened || !root.embedded) return
++    panel.ensureContent()
++    var content = panel.loadedContent
++    if (!content) return
++    if (!originalContentParent) originalContentParent = content.parent
++    var host = Integration.Bridge.host
++    host.openExtra(root)
++    content.parent = host.extraSurface
++    Qt.callLater(function(){ if (root.opened) content.forceActiveFocus() })
++  }
+   moduleName: "omarchy.elsewhen"
+   ipcTarget: "omarchy.elsewhen"
+   manageIpc: false
+@@ -709,6 +740,7 @@
+   }
+ 
+   onOpenedChanged: {
++    {
+     if (opened) {
+       // The opening spin below drives the hero, so build the content first.
+       panel.ensureContent()
+@@ -723,6 +755,9 @@
+       setGlobeMode(false, false); scrubMinutes = 0
+       spinPending = false; spinFallback.stop()
+     }
++  }
++    if (root.opened && root.embedded) root.syncEmbedded()
++    else if (!root.opened && Integration.Bridge.host) Integration.Bridge.host.extraClosed(root)
+   }
+   Component.onCompleted: refresh()
+ 
+@@ -998,8 +1033,9 @@
+     anchorItem: button
+     owner: root
+     bar: root.bar
+-    open: root.opened
++    open: root.opened && !root.embedded
+     focusTarget: panel.loadedContent
++    onLoadedContentChanged: if (root.opened && root.embedded) Qt.callLater(root.syncEmbedded)
+     contentWidth: panel.fittedContentWidth(Style.space(340))
+     contentHeight: panel.fittedContentHeight(panel.loadedContentHeight, Style.space(680))
+ 

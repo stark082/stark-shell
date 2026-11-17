@@ -1,0 +1,1177 @@
+{
+  "schema": 1,
+  "release": "0.1.0",
+  "environment": {
+    "omarchy": "4.5.0-3",
+    "quickshell": "0.3.2",
+    "hyprland": "0.56.2"
+  },
+  "components": {
+    "visualizer": {
+      "id": "stark.visualizer",
+      "dependencies": [],
+      "files": {
+        "BarWidget.qml": {
+          "overlay": "overlays/stark.visualizer/BarWidget.qml",
+          "sha256": "6b141e671879220f9a3ffc6db8e455c6b2c8b27ead398c3886a249e82b3618a8",
+          "executable": false
+        },
+        "Bars.qml": {
+          "overlay": "overlays/stark.visualizer/Bars.qml",
+          "sha256": "e40442b4ff2b8f45d9a7619d8042a2de3bc498dba5342a691e3d6c8d75e1e175",
+          "executable": false
+        },
+        "FocusModel.js": {
+          "overlay": "overlays/stark.visualizer/FocusModel.js",
+          "sha256": "3d509b4e3062c0359fab6cc31ee9c82cbad7499154318b63269a62a8b97012a4",
+          "executable": false
+        },
+        "LICENSE": {
+          "overlay": "overlays/stark.visualizer/LICENSE",
+          "sha256": "fb981668c18a279e285fc4d83fba1e836cc84dd4daa73c9697d3cfd2d8aca6e0",
+          "executable": false
+        },
+        "Visualizer.qml": {
+          "overlay": "overlays/stark.visualizer/Visualizer.qml",
+          "sha256": "ce73b018ec8f9c4962fe2d79510f74c6e2f118a958db549f52cc70a8151b6ccf",
+          "executable": false
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.visualizer/manifest.json",
+          "sha256": "ab5ebbdde6862c431d5b2b4e3b5eef53ca9b3a9a47c8bd37fc1f83172b991af6",
+          "executable": false
+        },
+        "qmldir": {
+          "overlay": "overlays/stark.visualizer/qmldir",
+          "sha256": "d65e04f660f1e3577e1880847a03c4ee31bab834475c5f47addafd78c2335a7c",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/vyntaris/vyntaris",
+        "release": "967cdee5436b85e5a7ce8c6b300dddfddc820e03",
+        "license": "GPL-3.0",
+        "modified_files": [
+          "BarWidget.qml",
+          "Bars.qml",
+          "FocusModel.js",
+          "LICENSE",
+          "Visualizer.qml",
+          "manifest.json",
+          "qmldir"
+        ],
+        "purpose": "CAVA/PipeWire visualization and media-window focus",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      },
+      "additional_upstreams": [
+        {
+          "repository": "https://github.com/vyntaris/vyntaris",
+          "commit": "967cdee5436b85e5a7ce8c6b300dddfddc820e03",
+          "license": "GPL-3.0",
+          "files": {
+            "config/quickshell/services/Visualizer.qml": {
+              "sha256": "dd9183b860749cbeba4e9d74b5375829986062cf0be751cb9a5a9d5382b7e131",
+              "matches_commit": true
+            },
+            "config/quickshell/components/Bars.qml": {
+              "sha256": "a7823416a456d990325c1d66b09ac1a50b0577c1aa047518acee8aec1925aed8",
+              "matches_commit": true
+            },
+            "config/quickshell/components/Slant.js": {
+              "sha256": "8ef6527d09ffd1a2899e110abf4703a600ccc0d89ae0bf1c5179015b8d07dc3b",
+              "matches_commit": true
+            },
+            "config/quickshell/components/BarShape.qml": {
+              "sha256": "7dc3c736e5031112f98f219346dc0e609fbd2e57be9f76d9be8fea53b98c290e",
+              "matches_commit": true
+            }
+          },
+          "purpose": "Adapted visualization and island geometry; dependencies replaced with Omarchy services"
+        }
+      ]
+    },
+    "island": {
+      "id": "stark.bar",
+      "dependencies": [],
+      "files": {
+        "Bar.qml": {
+          "source": "shell/plugins/bar/Bar.qml",
+          "source_sha256": "865998cec3114a395e130e1ff16f92486c3fad8da59400035b95c11522c2b235",
+          "sha256": "9429ebca1aee50f98b3236d29aed4e5353a5f3c5eeba62b5da6715cc0dd6316a",
+          "executable": false,
+          "patch": "patches/stark.bar/Bar.qml.patch"
+        },
+        "BarModel.js": {
+          "source": "shell/plugins/bar/BarModel.js",
+          "source_sha256": "9394b2ca8256518bbe04a8b11f4b740e20c2d9c0859372eda475dc33200471b8",
+          "sha256": "9394b2ca8256518bbe04a8b11f4b740e20c2d9c0859372eda475dc33200471b8",
+          "executable": false
+        },
+        "BarShape.qml": {
+          "overlay": "overlays/stark.bar/BarShape.qml",
+          "sha256": "5a0f3707d30caf0cae4bc44d4d3ad65ad4f6375c1650faaacba84c9785812744",
+          "executable": false
+        },
+        "NotchHost.qml": {
+          "overlay": "overlays/stark.bar/NotchHost.qml",
+          "sha256": "2785c3cbe5039821610282e16e9369685d9d195cd9c696cf335844b576a14db2",
+          "executable": false
+        },
+        "Slant.js": {
+          "overlay": "overlays/stark.bar/Slant.js",
+          "sha256": "8ef6527d09ffd1a2899e110abf4703a600ccc0d89ae0bf1c5179015b8d07dc3b",
+          "executable": false
+        },
+        "VYNTARIS-LICENSE": {
+          "overlay": "overlays/stark.bar/VYNTARIS-LICENSE",
+          "sha256": "fb981668c18a279e285fc4d83fba1e836cc84dd4daa73c9697d3cfd2d8aca6e0",
+          "executable": false
+        },
+        "indicators/Dnd.qml": {
+          "source": "shell/plugins/bar/indicators/Dnd.qml",
+          "source_sha256": "f8621b970c192426f32ca015bfd2f6d327f518997f6ddff0f7043bdb532cfe9f",
+          "sha256": "f8621b970c192426f32ca015bfd2f6d327f518997f6ddff0f7043bdb532cfe9f",
+          "executable": false
+        },
+        "indicators/NightLight.qml": {
+          "source": "shell/plugins/bar/indicators/NightLight.qml",
+          "source_sha256": "c20e31acbe0b763dbb6bd46f215d16fd74e1d5f7d8eb017e80dc39eb5e9ac838",
+          "sha256": "c20e31acbe0b763dbb6bd46f215d16fd74e1d5f7d8eb017e80dc39eb5e9ac838",
+          "executable": false
+        },
+        "indicators/PasswordlessSudo.qml": {
+          "source": "shell/plugins/bar/indicators/PasswordlessSudo.qml",
+          "source_sha256": "3c6fc9cb15081ca8bebbce3f712c1370969b7fe3b04520a73593b8e09c8a9b4e",
+          "sha256": "3c6fc9cb15081ca8bebbce3f712c1370969b7fe3b04520a73593b8e09c8a9b4e",
+          "executable": false
+        },
+        "indicators/Reminder.qml": {
+          "source": "shell/plugins/bar/indicators/Reminder.qml",
+          "source_sha256": "51cef554abf4b4b28692cee73add20e2c34bd9883bfed74be10b5334d73f7c7b",
+          "sha256": "51cef554abf4b4b28692cee73add20e2c34bd9883bfed74be10b5334d73f7c7b",
+          "executable": false
+        },
+        "indicators/RemoteSession.qml": {
+          "source": "shell/plugins/bar/indicators/RemoteSession.qml",
+          "source_sha256": "c464abb97062bea847c596e26e1f92e0a9de0487fbcc855bcaf91ad400359b1b",
+          "sha256": "c464abb97062bea847c596e26e1f92e0a9de0487fbcc855bcaf91ad400359b1b",
+          "executable": false
+        },
+        "indicators/ScreenRecording.qml": {
+          "source": "shell/plugins/bar/indicators/ScreenRecording.qml",
+          "source_sha256": "c68a8656764ccea79d052531c2f8603d36f815185bebf183f8bb80c3f18e1247",
+          "sha256": "c68a8656764ccea79d052531c2f8603d36f815185bebf183f8bb80c3f18e1247",
+          "executable": false
+        },
+        "indicators/StayAwake.qml": {
+          "source": "shell/plugins/bar/indicators/StayAwake.qml",
+          "source_sha256": "80805a48636b7037649a905795e7fc57fc431618e3cda629548314f4cce2fa68",
+          "sha256": "80805a48636b7037649a905795e7fc57fc431618e3cda629548314f4cce2fa68",
+          "executable": false
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.bar/manifest.json",
+          "sha256": "accc7583c3fda3f81558a3e72a44e06e2fbac7cfb40cd6cddff0c279d5c8b68c",
+          "executable": false
+        },
+        "menu-bridge/Bridge.qml": {
+          "overlay": "overlays/stark.bar/menu-bridge/Bridge.qml",
+          "sha256": "1496759e665432cc278dfc5e7affe0bcdcf6c1221b2c1fe356176b3efb9eb0a6",
+          "executable": false
+        },
+        "menu-bridge/qmldir": {
+          "overlay": "overlays/stark.bar/menu-bridge/qmldir",
+          "sha256": "89d9c6715a3fd8e17ea8286918088fa6fcde0ad5a387bef7d9be47075d60f6ab",
+          "executable": false
+        },
+        "widgets/ActiveWindow.manifest.json": {
+          "source": "shell/plugins/bar/widgets/ActiveWindow.manifest.json",
+          "source_sha256": "b329d7bbec36086c2f72f904029229b71d4c3ad3afb96ce0ff3cf05b9eda9b80",
+          "sha256": "b329d7bbec36086c2f72f904029229b71d4c3ad3afb96ce0ff3cf05b9eda9b80",
+          "executable": false
+        },
+        "widgets/ActiveWindow.qml": {
+          "source": "shell/plugins/bar/widgets/ActiveWindow.qml",
+          "source_sha256": "c14da43b569c4a028f0c51eb176ba9a9fe12701b705f3fa6569555ecdabf54ee",
+          "sha256": "c14da43b569c4a028f0c51eb176ba9a9fe12701b705f3fa6569555ecdabf54ee",
+          "executable": false
+        },
+        "widgets/Indicators.manifest.json": {
+          "source": "shell/plugins/bar/widgets/Indicators.manifest.json",
+          "source_sha256": "b192e657959b2d5639cbccb2d59045723adc626a7760d358ed9df53643657228",
+          "sha256": "b192e657959b2d5639cbccb2d59045723adc626a7760d358ed9df53643657228",
+          "executable": false
+        },
+        "widgets/Indicators.qml": {
+          "source": "shell/plugins/bar/widgets/Indicators.qml",
+          "source_sha256": "1425a32ee64630d2ce083aba016209b4367b1d451d307549a05db596f9916893",
+          "sha256": "1425a32ee64630d2ce083aba016209b4367b1d451d307549a05db596f9916893",
+          "executable": false
+        },
+        "widgets/KeyboardLayout.manifest.json": {
+          "source": "shell/plugins/bar/widgets/KeyboardLayout.manifest.json",
+          "source_sha256": "7824e5e77a583edf7fba44d7e4f065a082fa96909dd6dbe1dd2fd9f0911620bd",
+          "sha256": "7824e5e77a583edf7fba44d7e4f065a082fa96909dd6dbe1dd2fd9f0911620bd",
+          "executable": false
+        },
+        "widgets/KeyboardLayout.qml": {
+          "source": "shell/plugins/bar/widgets/KeyboardLayout.qml",
+          "source_sha256": "3717d02d5dfd43892283706a7bee78c85ba4f6c51202badd45a25dd96f521992",
+          "sha256": "3717d02d5dfd43892283706a7bee78c85ba4f6c51202badd45a25dd96f521992",
+          "executable": false
+        },
+        "widgets/KeyboardLayoutModel.js": {
+          "source": "shell/plugins/bar/widgets/KeyboardLayoutModel.js",
+          "source_sha256": "d61308b95a628cdf3f3200683690799bd301a543c8d2309328258d6fe144d79d",
+          "sha256": "d61308b95a628cdf3f3200683690799bd301a543c8d2309328258d6fe144d79d",
+          "executable": false
+        },
+        "widgets/Microphone.manifest.json": {
+          "source": "shell/plugins/bar/widgets/Microphone.manifest.json",
+          "source_sha256": "58f9f212d3a840bc4ebe276076ec37ba19977f96808e8a8c2ce00aa2a35b8055",
+          "sha256": "58f9f212d3a840bc4ebe276076ec37ba19977f96808e8a8c2ce00aa2a35b8055",
+          "executable": false
+        },
+        "widgets/Microphone.qml": {
+          "source": "shell/plugins/bar/widgets/Microphone.qml",
+          "source_sha256": "2beeac535ef93a9680c8f6528c693c1c7b32f5aece75f06d9e86419838b363e9",
+          "sha256": "2beeac535ef93a9680c8f6528c693c1c7b32f5aece75f06d9e86419838b363e9",
+          "executable": false
+        },
+        "widgets/Spacer.manifest.json": {
+          "source": "shell/plugins/bar/widgets/Spacer.manifest.json",
+          "source_sha256": "760ef0a8c95587453907b621ca04ec7349311a154fb5d1b86bac9b1fa3a370fa",
+          "sha256": "760ef0a8c95587453907b621ca04ec7349311a154fb5d1b86bac9b1fa3a370fa",
+          "executable": false
+        },
+        "widgets/Spacer.qml": {
+          "source": "shell/plugins/bar/widgets/Spacer.qml",
+          "source_sha256": "85abd1cd06755e57194b86d30df9c31e7521e5c91f5a663d9cd6420b9e91c545",
+          "sha256": "85abd1cd06755e57194b86d30df9c31e7521e5c91f5a663d9cd6420b9e91c545",
+          "executable": false
+        },
+        "widgets/SystemUpdate.manifest.json": {
+          "source": "shell/plugins/bar/widgets/SystemUpdate.manifest.json",
+          "source_sha256": "daf0806360b5c8ffd71a0d08d9ef0e0f69048ea85c4b10f45b4a8e30b4601328",
+          "sha256": "daf0806360b5c8ffd71a0d08d9ef0e0f69048ea85c4b10f45b4a8e30b4601328",
+          "executable": false
+        },
+        "widgets/SystemUpdate.qml": {
+          "source": "shell/plugins/bar/widgets/SystemUpdate.qml",
+          "source_sha256": "20b4b7b1e8e5a9e7ac87eac64d7c23edf98cbad72072bf64d88b35c260830950",
+          "sha256": "20b4b7b1e8e5a9e7ac87eac64d7c23edf98cbad72072bf64d88b35c260830950",
+          "executable": false
+        },
+        "widgets/Tray.manifest.json": {
+          "source": "shell/plugins/bar/widgets/Tray.manifest.json",
+          "source_sha256": "ece62a8a728bf5903b344f293711379df62088b94532237ca42f432c84230fb2",
+          "sha256": "ece62a8a728bf5903b344f293711379df62088b94532237ca42f432c84230fb2",
+          "executable": false
+        },
+        "widgets/Tray.qml": {
+          "source": "shell/plugins/bar/widgets/Tray.qml",
+          "source_sha256": "bb0a6d360d885df58ac8ab44ff1a3668a3d913c36257a15e6282c4720dba8d2f",
+          "sha256": "bb0a6d360d885df58ac8ab44ff1a3668a3d913c36257a15e6282c4720dba8d2f",
+          "executable": false
+        },
+        "widgets/TrayModel.js": {
+          "source": "shell/plugins/bar/widgets/TrayModel.js",
+          "source_sha256": "e2a06e56334a37f41f057ba7ef128a870b9b37e6e489dd502dfde979b5af7247",
+          "sha256": "e2a06e56334a37f41f057ba7ef128a870b9b37e6e489dd502dfde979b5af7247",
+          "executable": false
+        },
+        "widgets/Workspaces.manifest.json": {
+          "source": "shell/plugins/bar/widgets/Workspaces.manifest.json",
+          "source_sha256": "4f381b91cd9e6306870e7ac03ce10ad20248178b45c7cd5d738fda6924df5da3",
+          "sha256": "4f381b91cd9e6306870e7ac03ce10ad20248178b45c7cd5d738fda6924df5da3",
+          "executable": false
+        },
+        "widgets/Workspaces.qml": {
+          "source": "shell/plugins/bar/widgets/Workspaces.qml",
+          "source_sha256": "a320502697738957ad4e04ce68ce06cd9163e8b2fddccac72bc888224778d96d",
+          "sha256": "a320502697738957ad4e04ce68ce06cd9163e8b2fddccac72bc888224778d96d",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "Bar.qml",
+          "BarShape.qml",
+          "NotchHost.qml",
+          "Slant.js",
+          "VYNTARIS-LICENSE",
+          "manifest.json",
+          "menu-bridge/Bridge.qml",
+          "menu-bridge/qmldir"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      },
+      "additional_upstreams": [
+        {
+          "repository": "https://github.com/vyntaris/vyntaris",
+          "commit": "967cdee5436b85e5a7ce8c6b300dddfddc820e03",
+          "license": "GPL-3.0",
+          "files": {
+            "config/quickshell/services/Visualizer.qml": {
+              "sha256": "dd9183b860749cbeba4e9d74b5375829986062cf0be751cb9a5a9d5382b7e131",
+              "matches_commit": true
+            },
+            "config/quickshell/components/Bars.qml": {
+              "sha256": "a7823416a456d990325c1d66b09ac1a50b0577c1aa047518acee8aec1925aed8",
+              "matches_commit": true
+            },
+            "config/quickshell/components/Slant.js": {
+              "sha256": "8ef6527d09ffd1a2899e110abf4703a600ccc0d89ae0bf1c5179015b8d07dc3b",
+              "matches_commit": true
+            },
+            "config/quickshell/components/BarShape.qml": {
+              "sha256": "7dc3c736e5031112f98f219346dc0e609fbd2e57be9f76d9be8fea53b98c290e",
+              "matches_commit": true
+            }
+          },
+          "purpose": "Adapted visualization and island geometry; dependencies replaced with Omarchy services"
+        }
+      ]
+    },
+    "launcher": {
+      "id": "stark.menu",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "BarWidget.qml": {
+          "source": "shell/plugins/menu/BarWidget.qml",
+          "source_sha256": "12e95ff07365eeb60d102d9a4d5f07d65fed5f3eb3f9b9b25c6ac698e0e5b9ee",
+          "sha256": "12e95ff07365eeb60d102d9a4d5f07d65fed5f3eb3f9b9b25c6ac698e0e5b9ee",
+          "executable": false
+        },
+        "Menu.qml": {
+          "source": "shell/plugins/menu/Menu.qml",
+          "source_sha256": "f76b25be69e80fbb139d29ca8e4bca8a98078f559d203750c3ced0f86f6d5f21",
+          "sha256": "bf99c857b10d190cedb8afc042b9a73db60782e40de174aa1f2ece7184ad74ba",
+          "executable": false,
+          "patch": "patches/stark.menu/Menu.qml.patch"
+        },
+        "MenuModel.js": {
+          "source": "shell/plugins/menu/MenuModel.js",
+          "source_sha256": "52178e52dddd6c553b4406c2a2a55122f3d55c632ef0075d923da84603e06caa",
+          "sha256": "52178e52dddd6c553b4406c2a2a55122f3d55c632ef0075d923da84603e06caa",
+          "executable": false
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.menu/manifest.json",
+          "sha256": "6c3c078f85ee348d256fbe789e80f11616eb55655a4e09463414720a80022fb6",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "Menu.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "calendar": {
+      "id": "stark.clock",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "BarWidget.qml": {
+          "source": "shell/plugins/panels/clock/BarWidget.qml",
+          "source_sha256": "e73f7a17f74ade40711dffa8262c1773b7bf74fd65a3047011317f588af9f3f6",
+          "sha256": "7019f16b4e02116e731a1623296332148cc87c585f5617b150ea0e3022c6b3e4",
+          "executable": false,
+          "patch": "patches/stark.clock/BarWidget.qml.patch"
+        },
+        "Model.js": {
+          "source": "shell/plugins/panels/clock/Model.js",
+          "source_sha256": "8a2645eb75b22d4ee4b278e19b5092a91638f4b3af9a704999f7cd86d7f1091e",
+          "sha256": "8a2645eb75b22d4ee4b278e19b5092a91638f4b3af9a704999f7cd86d7f1091e",
+          "executable": false
+        },
+        "Panel.qml": {
+          "source": "shell/plugins/panels/clock/Panel.qml",
+          "source_sha256": "9eed7b315a07c61aeb57aa9ed7ae27b126eea91ecc66af0b5f49ce792ef56b7c",
+          "sha256": "4d0a313c45b0c0ee194883cdb5595dc0a9018e20fcc4489e83d53fdfc3c08e25",
+          "executable": false,
+          "patch": "patches/stark.clock/Panel.qml.patch"
+        },
+        "WallClock.qml": {
+          "source": "shell/plugins/panels/clock/WallClock.qml",
+          "source_sha256": "369c0c5313a56b9963e6b1853ebf9294b666c3ec9aa9fa819f3becb024a5261d",
+          "sha256": "369c0c5313a56b9963e6b1853ebf9294b666c3ec9aa9fa819f3becb024a5261d",
+          "executable": false
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.clock/manifest.json",
+          "sha256": "459fff36c51ea4d8896d97e90196a7111175aed2f3d39013fa33fa6ad4ecfeff",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "BarWidget.qml",
+          "Panel.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "audio": {
+      "id": "stark.audio",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "Model.js": {
+          "source": "shell/plugins/panels/audio/Model.js",
+          "source_sha256": "cac32aa2c2a2449223f64bfd935be360b4f61eb8112d4f62dc21270447eaee1b",
+          "sha256": "cac32aa2c2a2449223f64bfd935be360b4f61eb8112d4f62dc21270447eaee1b",
+          "executable": false
+        },
+        "Panel.qml": {
+          "source": "shell/plugins/panels/audio/Panel.qml",
+          "source_sha256": "f75564d2a8be05a18d832be926747b298401748d6e976a0c39f9053456439d09",
+          "sha256": "558f59f673d49bb77ebb7f08995f41f897bb3f2b4da48b0900a1196386c025fe",
+          "executable": false,
+          "patch": "patches/stark.audio/Panel.qml.patch"
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.audio/manifest.json",
+          "sha256": "715651b0ef1c39d194b79e3ca987a4c8292376b32a7cde8601415a558c0512cf",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "Panel.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "network": {
+      "id": "stark.network",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "Model.js": {
+          "source": "shell/plugins/panels/network/Model.js",
+          "source_sha256": "1562b0752495f693ef8231148f5e6d99c375d120852e9c312a2b47067aa9a8fa",
+          "sha256": "1562b0752495f693ef8231148f5e6d99c375d120852e9c312a2b47067aa9a8fa",
+          "executable": false
+        },
+        "Panel.qml": {
+          "source": "shell/plugins/panels/network/Panel.qml",
+          "source_sha256": "8beba301a1d87db144543ad888226099c3dd1c2999f2a52106964b5851959adb",
+          "sha256": "9048037c898097a1376db9f9efec31183b8f1ac1690840fc4b63eeff1739afa9",
+          "executable": false,
+          "patch": "patches/stark.network/Panel.qml.patch"
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.network/manifest.json",
+          "sha256": "97b2d04cfb83cfe910752e1d3d314d3b69dbde53087d8e8a3ab6fef4d6a8ec2e",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "Panel.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "bluetooth": {
+      "id": "stark.bluetooth",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "Model.js": {
+          "source": "shell/plugins/panels/bluetooth/Model.js",
+          "source_sha256": "b34f3259c6553f20ce37619d2f390cd3293303266f89f2a6df0b6810da384417",
+          "sha256": "b34f3259c6553f20ce37619d2f390cd3293303266f89f2a6df0b6810da384417",
+          "executable": false
+        },
+        "Panel.qml": {
+          "source": "shell/plugins/panels/bluetooth/Panel.qml",
+          "source_sha256": "1e03d3ae942f4fe095a57252d1f8253a4de269428bc5444b75ac30da84e1b269",
+          "sha256": "e2cf2878dce8a0de154b5acbb4f6e95a6e9c48d67898b69091376eb2f2317674",
+          "executable": false,
+          "patch": "patches/stark.bluetooth/Panel.qml.patch"
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.bluetooth/manifest.json",
+          "sha256": "5e0fd27ef98b7ad0502aa0f7b3f665919ab83cbd371019e7ba34f677ad656ac5",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "Panel.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "display": {
+      "id": "stark.monitor",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "Model.js": {
+          "source": "shell/plugins/panels/monitor/Model.js",
+          "source_sha256": "4374daa9cf57e7428dadfd7b0156ee8cef75b32a934ddd82b30dc4d0bf6d7c5c",
+          "sha256": "4374daa9cf57e7428dadfd7b0156ee8cef75b32a934ddd82b30dc4d0bf6d7c5c",
+          "executable": false
+        },
+        "Panel.qml": {
+          "source": "shell/plugins/panels/monitor/Panel.qml",
+          "source_sha256": "b405184f103f1e82200a1aebe984f2c654804009af27cad58d056368e948afca",
+          "sha256": "dbf086445011708a7853c6629681e62567135ed1696cb72dbc687d6aeaf875c5",
+          "executable": false,
+          "patch": "patches/stark.monitor/Panel.qml.patch"
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.monitor/manifest.json",
+          "sha256": "121a742454fbcbe08aee1671dfb6ce201f7c77324f89e30023c207ed57e3a2d6",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "Panel.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "battery": {
+      "id": "stark.power",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "Model.js": {
+          "source": "shell/plugins/panels/power/Model.js",
+          "source_sha256": "0a7f42b18dcdea6da54e02813f0fe9ff57e355f16e7a9caba1ba63913420ca43",
+          "sha256": "0a7f42b18dcdea6da54e02813f0fe9ff57e355f16e7a9caba1ba63913420ca43",
+          "executable": false
+        },
+        "Panel.qml": {
+          "source": "shell/plugins/panels/power/Panel.qml",
+          "source_sha256": "145cd9632d8caa3a9b390b27cb6e7382b2ccb83610ae4bda04a2755c52a75068",
+          "sha256": "ac5e89a0c3bb3994264d1f44a3d44f99634efef96877c70b73a91eaa869a0c86",
+          "executable": false,
+          "patch": "patches/stark.power/Panel.qml.patch"
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.power/manifest.json",
+          "sha256": "117a0ca9a34a99e7f1fda9cfca9e42758501c01187766dd2c2dfec98d6c24872",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "Panel.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "weather": {
+      "id": "stark.weather",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "BarWidget.qml": {
+          "source": "shell/plugins/panels/weather/BarWidget.qml",
+          "source_sha256": "ab3e32b97cf37847ff880a44013133eef9b9f04fe7258b692b30e7b24c6de4ca",
+          "sha256": "62b27ab546f0beb81e2d7b334f7b2b3753702dd3ca49572dc3e223e89485e99e",
+          "executable": false,
+          "patch": "patches/stark.weather/BarWidget.qml.patch"
+        },
+        "Model.js": {
+          "source": "shell/plugins/panels/weather/Model.js",
+          "source_sha256": "3e7dee236b287a6b58fdb1ef9597a2e0bdbe014473795147e47ed97ff78ce579",
+          "sha256": "3e7dee236b287a6b58fdb1ef9597a2e0bdbe014473795147e47ed97ff78ce579",
+          "executable": false
+        },
+        "Panel.qml": {
+          "source": "shell/plugins/panels/weather/Panel.qml",
+          "source_sha256": "55dfe63d84b5421a5e3cad0f619bc3e0a5b3b495a972b44af0fe3a32269ed829",
+          "sha256": "647f1d58bd0f1debe7c8384a959d4502fcc1c41921e3080499764e2d53873d12",
+          "executable": false,
+          "patch": "patches/stark.weather/Panel.qml.patch"
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.weather/manifest.json",
+          "sha256": "bd7931225cf0094f43aa6b2ac57646464ba96fda8cc8e10c832ae36c4aa31999",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "BarWidget.qml",
+          "Panel.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "world-clock": {
+      "id": "stark.elsewhen",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "Arc.js": {
+          "source": "shell/plugins/panels/elsewhen/Arc.js",
+          "source_sha256": "b9d2046868e68f8551bce8a2921cae9cbb546f323fe93f672667e09685daf014",
+          "sha256": "b9d2046868e68f8551bce8a2921cae9cbb546f323fe93f672667e09685daf014",
+          "executable": false
+        },
+        "ArcText.qml": {
+          "source": "shell/plugins/panels/elsewhen/ArcText.qml",
+          "source_sha256": "3d787c9650553aaba1eb05842de9757bf08abf0f5218bd42db1c86500dd4e3d2",
+          "sha256": "3d787c9650553aaba1eb05842de9757bf08abf0f5218bd42db1c86500dd4e3d2",
+          "executable": false
+        },
+        "Avatar.qml": {
+          "source": "shell/plugins/panels/elsewhen/Avatar.qml",
+          "source_sha256": "13146573e02ef4ccc4147abd728611990a587ec3f5f09cce6ff0f8aba61d94bd",
+          "sha256": "13146573e02ef4ccc4147abd728611990a587ec3f5f09cce6ff0f8aba61d94bd",
+          "executable": false
+        },
+        "CityMatches.qml": {
+          "source": "shell/plugins/panels/elsewhen/CityMatches.qml",
+          "source_sha256": "5f142966d4263f715ace80e2b853a510b84502be5dff3f56997bdd8d0aa70207",
+          "sha256": "5f142966d4263f715ace80e2b853a510b84502be5dff3f56997bdd8d0aa70207",
+          "executable": false
+        },
+        "CityRow.qml": {
+          "source": "shell/plugins/panels/elsewhen/CityRow.qml",
+          "source_sha256": "b3691d4eb95de0ab857bbd4480914d7e02210b817ba9e595b3e9a3da92b0fcd5",
+          "sha256": "b3691d4eb95de0ab857bbd4480914d7e02210b817ba9e595b3e9a3da92b0fcd5",
+          "executable": false
+        },
+        "CitySearch.qml": {
+          "source": "shell/plugins/panels/elsewhen/CitySearch.qml",
+          "source_sha256": "651d2624c21f6e88b16d813990b206e6c7ad296bb059e363f2272e4e9db2aa2e",
+          "sha256": "651d2624c21f6e88b16d813990b206e6c7ad296bb059e363f2272e4e9db2aa2e",
+          "executable": false
+        },
+        "DaylightStrip.qml": {
+          "source": "shell/plugins/panels/elsewhen/DaylightStrip.qml",
+          "source_sha256": "6dc85bee90f1e15ed70fb65a7ee535964b80dec1deacb649e18ba0c75bec4bb6",
+          "sha256": "6dc85bee90f1e15ed70fb65a7ee535964b80dec1deacb649e18ba0c75bec4bb6",
+          "executable": false
+        },
+        "Globe.qml": {
+          "source": "shell/plugins/panels/elsewhen/Globe.qml",
+          "source_sha256": "1b11bee9a7778b2068f07880fabd3e16a6769a96569562155ab14915919bd942",
+          "sha256": "1b11bee9a7778b2068f07880fabd3e16a6769a96569562155ab14915919bd942",
+          "executable": false
+        },
+        "GlobeFooter.qml": {
+          "source": "shell/plugins/panels/elsewhen/GlobeFooter.qml",
+          "source_sha256": "a1a320e19df71eedcca8b6916db93a62da8afabf3db15f16369a0b1198d61d6d",
+          "sha256": "a1a320e19df71eedcca8b6916db93a62da8afabf3db15f16369a0b1198d61d6d",
+          "executable": false
+        },
+        "GlobeModel.js": {
+          "source": "shell/plugins/panels/elsewhen/GlobeModel.js",
+          "source_sha256": "18d1609e5b7c978709bed63d3178712cc2d934d7106ce8d00adf9a6e431af957",
+          "sha256": "18d1609e5b7c978709bed63d3178712cc2d934d7106ce8d00adf9a6e431af957",
+          "executable": false
+        },
+        "Greetings.js": {
+          "source": "shell/plugins/panels/elsewhen/Greetings.js",
+          "source_sha256": "d65ca5ab3ccf96ad38d7e5e1543a6a50164c32d342792ef34c1d9987a93b9afa",
+          "sha256": "d65ca5ab3ccf96ad38d7e5e1543a6a50164c32d342792ef34c1d9987a93b9afa",
+          "executable": false
+        },
+        "HeroTitle.qml": {
+          "source": "shell/plugins/panels/elsewhen/HeroTitle.qml",
+          "source_sha256": "22218a8ce8250f11ae147ce2e73e8275e2418e56a23c06b43d92fe71f4fda6b5",
+          "sha256": "22218a8ce8250f11ae147ce2e73e8275e2418e56a23c06b43d92fe71f4fda6b5",
+          "executable": false
+        },
+        "MiniGlobe.qml": {
+          "source": "shell/plugins/panels/elsewhen/MiniGlobe.qml",
+          "source_sha256": "83820872f03eba4c0e54bab2dd5636eeb66413aaa6dd261a33bdbeea52f42195",
+          "sha256": "83820872f03eba4c0e54bab2dd5636eeb66413aaa6dd261a33bdbeea52f42195",
+          "executable": false
+        },
+        "Model.js": {
+          "source": "shell/plugins/panels/elsewhen/Model.js",
+          "source_sha256": "669cbfe9b28e65bea3673a003f771c1130a9ff0a8df1767dd385cf381f864c84",
+          "sha256": "669cbfe9b28e65bea3673a003f771c1130a9ff0a8df1767dd385cf381f864c84",
+          "executable": false
+        },
+        "MoonDot.qml": {
+          "source": "shell/plugins/panels/elsewhen/MoonDot.qml",
+          "source_sha256": "dc0eff75871eac3e3b99067b92093bb28eeb667ce5b261b34261b8f5340d7378",
+          "sha256": "dc0eff75871eac3e3b99067b92093bb28eeb667ce5b261b34261b8f5340d7378",
+          "executable": false
+        },
+        "Panel.qml": {
+          "source": "shell/plugins/panels/elsewhen/Panel.qml",
+          "source_sha256": "2a357c056109ca074622292d5083b2a1d372097d428a5ed805e5dda786d21d01",
+          "sha256": "7959ac8d064df8458dfcf1d280b887b9f1fb355581830d291d7a8665e8dda523",
+          "executable": false,
+          "patch": "patches/stark.elsewhen/Panel.qml.patch"
+        },
+        "Sun.js": {
+          "source": "shell/plugins/panels/elsewhen/Sun.js",
+          "source_sha256": "0b083eb24757513bfd06e4929aa85b41b9802a3212ad9575c5fa92a4676179bf",
+          "sha256": "0b083eb24757513bfd06e4929aa85b41b9802a3212ad9575c5fa92a4676179bf",
+          "executable": false
+        },
+        "cities.json": {
+          "source": "shell/plugins/panels/elsewhen/cities.json",
+          "source_sha256": "6e6127b929286d37b0adac0d2d1038a9bf9f32a8fc7e0a492bf8142286a9ad9a",
+          "sha256": "6e6127b929286d37b0adac0d2d1038a9bf9f32a8fc7e0a492bf8142286a9ad9a",
+          "executable": false
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.elsewhen/manifest.json",
+          "sha256": "f49fe6d10199e9ca6d75ee18b88c9dae9da85148fad59ff9b4f74e5769fecbb0",
+          "executable": false
+        },
+        "world.json": {
+          "source": "shell/plugins/panels/elsewhen/world.json",
+          "source_sha256": "b2aa85ab1f671ca76f1514b6f9e92b9f19ca2b0897b7b903abb7d31e44687ee6",
+          "sha256": "b2aa85ab1f671ca76f1514b6f9e92b9f19ca2b0897b7b903abb7d31e44687ee6",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.1.0",
+        "license": "MIT",
+        "modified_files": [
+          "Panel.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "agents": {
+      "id": "stark.agents",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "Agent.qml": {
+          "source": "shell/plugins/agents/Agent.qml",
+          "source_sha256": "fc37dfb3363e3212becc999785969b31d2dedcb32df9b776dd0fa9bbbed30a83",
+          "sha256": "fc37dfb3363e3212becc999785969b31d2dedcb32df9b776dd0fa9bbbed30a83",
+          "executable": false
+        },
+        "Main.qml": {
+          "source": "shell/plugins/agents/Main.qml",
+          "source_sha256": "5811977c29f2068f7941fc722441823eceef9f8995b3448da5d7bcb763749c32",
+          "sha256": "5811977c29f2068f7941fc722441823eceef9f8995b3448da5d7bcb763749c32",
+          "executable": false
+        },
+        "Panel.qml": {
+          "source": "shell/plugins/agents/Panel.qml",
+          "source_sha256": "9e23f39a47f416fae9df00f8451c17d198d24026d107bd0fed20ec95fa7b4b94",
+          "sha256": "eba6ec6231d272aa127f31af468f2eb2bab0dfde9e11a70f50f936c684c07a29",
+          "executable": false,
+          "patch": "patches/stark.agents/Panel.qml.patch"
+        },
+        "assets/agy-light.svg": {
+          "source": "shell/plugins/agents/assets/agy-light.svg",
+          "source_sha256": "b671d7578809c2a052468b561431896c4ff192012a7c706aba9a366098711ecb",
+          "sha256": "b671d7578809c2a052468b561431896c4ff192012a7c706aba9a366098711ecb",
+          "executable": false
+        },
+        "assets/agy.svg": {
+          "source": "shell/plugins/agents/assets/agy.svg",
+          "source_sha256": "c2102431a352b6aa4c6ea5153e954f2b90ca8f6028c8672d54190a428d3da846",
+          "sha256": "c2102431a352b6aa4c6ea5153e954f2b90ca8f6028c8672d54190a428d3da846",
+          "executable": false
+        },
+        "assets/claude.svg": {
+          "source": "shell/plugins/agents/assets/claude.svg",
+          "source_sha256": "0df6dad23995f5a76c6db8cc2a4e646ff45bd7a0626ef98662a7025646e5eea1",
+          "sha256": "0df6dad23995f5a76c6db8cc2a4e646ff45bd7a0626ef98662a7025646e5eea1",
+          "executable": false
+        },
+        "assets/codex-light.svg": {
+          "source": "shell/plugins/agents/assets/codex-light.svg",
+          "source_sha256": "dc510dda4e7e43c214e6a5a023b9909bc645b45f2fdde537ee6d6b09f1bbc111",
+          "sha256": "dc510dda4e7e43c214e6a5a023b9909bc645b45f2fdde537ee6d6b09f1bbc111",
+          "executable": false
+        },
+        "assets/codex.svg": {
+          "source": "shell/plugins/agents/assets/codex.svg",
+          "source_sha256": "f1aeeba6d631feca31129bbc06ac7f813078d6bafa3837061e0ead173f36b857",
+          "sha256": "f1aeeba6d631feca31129bbc06ac7f813078d6bafa3837061e0ead173f36b857",
+          "executable": false
+        },
+        "assets/copilot-light.svg": {
+          "source": "shell/plugins/agents/assets/copilot-light.svg",
+          "source_sha256": "222632f8fcca10026089e4a48d2ecde6ace417a69e74d5fd82e29f211901287a",
+          "sha256": "222632f8fcca10026089e4a48d2ecde6ace417a69e74d5fd82e29f211901287a",
+          "executable": false
+        },
+        "assets/copilot.svg": {
+          "source": "shell/plugins/agents/assets/copilot.svg",
+          "source_sha256": "82956c462c6ad156b3a0107f7f3d981caa7a322bcc13953dc6354925a49f7360",
+          "sha256": "82956c462c6ad156b3a0107f7f3d981caa7a322bcc13953dc6354925a49f7360",
+          "executable": false
+        },
+        "assets/cursor-light.svg": {
+          "source": "shell/plugins/agents/assets/cursor-light.svg",
+          "source_sha256": "3850ebeef95a2ac338557f63dfb2a719398393805eda0a424964083aa4c4e501",
+          "sha256": "3850ebeef95a2ac338557f63dfb2a719398393805eda0a424964083aa4c4e501",
+          "executable": false
+        },
+        "assets/cursor.svg": {
+          "source": "shell/plugins/agents/assets/cursor.svg",
+          "source_sha256": "df73dcda9b5b0a3178d8f43f553d309b1f745d9cb5966e7dff748aee74f4dcbd",
+          "sha256": "df73dcda9b5b0a3178d8f43f553d309b1f745d9cb5966e7dff748aee74f4dcbd",
+          "executable": false
+        },
+        "assets/deepseek.svg": {
+          "source": "shell/plugins/agents/assets/deepseek.svg",
+          "source_sha256": "011b1b880be41835a87c0e660c69e4b72464d6376926d0391a16ac9b0660917f",
+          "sha256": "011b1b880be41835a87c0e660c69e4b72464d6376926d0391a16ac9b0660917f",
+          "executable": false
+        },
+        "assets/devin-light.svg": {
+          "source": "shell/plugins/agents/assets/devin-light.svg",
+          "source_sha256": "9d92781d173d3f9e050263900a8bc1e53ff049191eeb1d5e47b8e239fe1f2793",
+          "sha256": "9d92781d173d3f9e050263900a8bc1e53ff049191eeb1d5e47b8e239fe1f2793",
+          "executable": false
+        },
+        "assets/devin.svg": {
+          "source": "shell/plugins/agents/assets/devin.svg",
+          "source_sha256": "83f5c7a7d21db45401e1088f6baa0baa1f0ed77fb9081911a18749da7f299cc6",
+          "sha256": "83f5c7a7d21db45401e1088f6baa0baa1f0ed77fb9081911a18749da7f299cc6",
+          "executable": false
+        },
+        "assets/fireworks.svg": {
+          "source": "shell/plugins/agents/assets/fireworks.svg",
+          "source_sha256": "fcf0a4f19c49f99d8aa09804f20d357ddfc61f2b12d43335ca01f882388b475c",
+          "sha256": "fcf0a4f19c49f99d8aa09804f20d357ddfc61f2b12d43335ca01f882388b475c",
+          "executable": false
+        },
+        "assets/grok-light.svg": {
+          "source": "shell/plugins/agents/assets/grok-light.svg",
+          "source_sha256": "c7f8a25f619e38f125b9fcd5adeba267b92ef753cd15369427c08ce4f0b13aad",
+          "sha256": "c7f8a25f619e38f125b9fcd5adeba267b92ef753cd15369427c08ce4f0b13aad",
+          "executable": false
+        },
+        "assets/grok.svg": {
+          "source": "shell/plugins/agents/assets/grok.svg",
+          "source_sha256": "3c5a8033a232fa5990cc13fc19f3907ad54f2af4ed593862b5d6bc39c7ea13b9",
+          "sha256": "3c5a8033a232fa5990cc13fc19f3907ad54f2af4ed593862b5d6bc39c7ea13b9",
+          "executable": false
+        },
+        "assets/grokbot-light.svg": {
+          "source": "shell/plugins/agents/assets/grokbot-light.svg",
+          "source_sha256": "cb9285bb9d0c5c9a68530bf0c3a02cbf1f7493ec7a44cf32cc05636b29c26e83",
+          "sha256": "cb9285bb9d0c5c9a68530bf0c3a02cbf1f7493ec7a44cf32cc05636b29c26e83",
+          "executable": false
+        },
+        "assets/grokbot.svg": {
+          "source": "shell/plugins/agents/assets/grokbot.svg",
+          "source_sha256": "c08c0109f66b093a10790d8a2856543f32616c4f588f2b4237634a260f9af3af",
+          "sha256": "c08c0109f66b093a10790d8a2856543f32616c4f588f2b4237634a260f9af3af",
+          "executable": false
+        },
+        "assets/hermes-light.svg": {
+          "source": "shell/plugins/agents/assets/hermes-light.svg",
+          "source_sha256": "4aee09c155271e82c111fb343f750fc2dc40243e1e7332f9d55f06765aeb0bff",
+          "sha256": "4aee09c155271e82c111fb343f750fc2dc40243e1e7332f9d55f06765aeb0bff",
+          "executable": false
+        },
+        "assets/hermes.svg": {
+          "source": "shell/plugins/agents/assets/hermes.svg",
+          "source_sha256": "403be9b0d798a3efe8b53139110733da62933089cc878ecc1f5e80814a3756fe",
+          "sha256": "403be9b0d798a3efe8b53139110733da62933089cc878ecc1f5e80814a3756fe",
+          "executable": false
+        },
+        "assets/kimchi.svg": {
+          "source": "shell/plugins/agents/assets/kimchi.svg",
+          "source_sha256": "1454f0c27bfa477d1483e91f8aa2b823c12545a98fa443ddf46a5a1945876a9d",
+          "sha256": "1454f0c27bfa477d1483e91f8aa2b823c12545a98fa443ddf46a5a1945876a9d",
+          "executable": false
+        },
+        "assets/kimi-light.svg": {
+          "source": "shell/plugins/agents/assets/kimi-light.svg",
+          "source_sha256": "2c88451b6ea910632ac5566aa5385caff8a748f607e4fb215873746f7b1636d8",
+          "sha256": "2c88451b6ea910632ac5566aa5385caff8a748f607e4fb215873746f7b1636d8",
+          "executable": false
+        },
+        "assets/kimi.svg": {
+          "source": "shell/plugins/agents/assets/kimi.svg",
+          "source_sha256": "685169e41b0320b3f70d017dcd62186e143a6614a18b2f501a05da05a3c48e9d",
+          "sha256": "685169e41b0320b3f70d017dcd62186e143a6614a18b2f501a05da05a3c48e9d",
+          "executable": false
+        },
+        "assets/minimax-light.svg": {
+          "source": "shell/plugins/agents/assets/minimax-light.svg",
+          "source_sha256": "cf594b35380648d98ac85c4ef8629ab6565d9f516ad936b5ed90f5c4002d6e49",
+          "sha256": "cf594b35380648d98ac85c4ef8629ab6565d9f516ad936b5ed90f5c4002d6e49",
+          "executable": false
+        },
+        "assets/minimax.svg": {
+          "source": "shell/plugins/agents/assets/minimax.svg",
+          "source_sha256": "75c24ab2e254cfb21172a2a1c891592d97fabd3c93fa0d70d3be3fbcba273398",
+          "sha256": "75c24ab2e254cfb21172a2a1c891592d97fabd3c93fa0d70d3be3fbcba273398",
+          "executable": false
+        },
+        "assets/muse-light.svg": {
+          "source": "shell/plugins/agents/assets/muse-light.svg",
+          "source_sha256": "41d251380473b6951c089504383903eeb963a94ab0b44534c66c94a3abe79e9c",
+          "sha256": "41d251380473b6951c089504383903eeb963a94ab0b44534c66c94a3abe79e9c",
+          "executable": false
+        },
+        "assets/muse.svg": {
+          "source": "shell/plugins/agents/assets/muse.svg",
+          "source_sha256": "b0e42adc765a7859a7d66f3d920cc6f5e782e5344ab54d5028e8f96fe8fc50bd",
+          "sha256": "b0e42adc765a7859a7d66f3d920cc6f5e782e5344ab54d5028e8f96fe8fc50bd",
+          "executable": false
+        },
+        "assets/ollama-light.svg": {
+          "source": "shell/plugins/agents/assets/ollama-light.svg",
+          "source_sha256": "374ba3e20a0d655a14953882c4dc97c1269f81893f3637c2a76ef7a4c2a49e7c",
+          "sha256": "374ba3e20a0d655a14953882c4dc97c1269f81893f3637c2a76ef7a4c2a49e7c",
+          "executable": false
+        },
+        "assets/ollama.svg": {
+          "source": "shell/plugins/agents/assets/ollama.svg",
+          "source_sha256": "ebfea4f514a33fd6a256bd429ae2c772c04fcfe916ae9957a485837edb37ca9f",
+          "sha256": "ebfea4f514a33fd6a256bd429ae2c772c04fcfe916ae9957a485837edb37ca9f",
+          "executable": false
+        },
+        "assets/opencode-light.svg": {
+          "source": "shell/plugins/agents/assets/opencode-light.svg",
+          "source_sha256": "5eeb3a5f14dbbccc03111296ecfd3cd05cc98844150d4f9d77ba921847953380",
+          "sha256": "5eeb3a5f14dbbccc03111296ecfd3cd05cc98844150d4f9d77ba921847953380",
+          "executable": false
+        },
+        "assets/opencode.svg": {
+          "source": "shell/plugins/agents/assets/opencode.svg",
+          "source_sha256": "4e84f87aa7bc2a5f8a72eeb08d3d4f1836b422189256d0bd5e7bfabc830d7ed0",
+          "sha256": "4e84f87aa7bc2a5f8a72eeb08d3d4f1836b422189256d0bd5e7bfabc830d7ed0",
+          "executable": false
+        },
+        "assets/openrouter-light.svg": {
+          "source": "shell/plugins/agents/assets/openrouter-light.svg",
+          "source_sha256": "2093059ca158af3b439cee97af5c002feef3728b7e022c89fe8401b25c702f4b",
+          "sha256": "2093059ca158af3b439cee97af5c002feef3728b7e022c89fe8401b25c702f4b",
+          "executable": false
+        },
+        "assets/openrouter.svg": {
+          "source": "shell/plugins/agents/assets/openrouter.svg",
+          "source_sha256": "2f42100bf86ffbb353e22f826646b94ebd95906d3e600d47dd39d7eea82fc14d",
+          "sha256": "2f42100bf86ffbb353e22f826646b94ebd95906d3e600d47dd39d7eea82fc14d",
+          "executable": false
+        },
+        "assets/qwen.svg": {
+          "source": "shell/plugins/agents/assets/qwen.svg",
+          "source_sha256": "67957f462df8b728330736d6d8a80c9e71a8873613a23371ae02a1bfbcac9ecd",
+          "sha256": "67957f462df8b728330736d6d8a80c9e71a8873613a23371ae02a1bfbcac9ecd",
+          "executable": false
+        },
+        "assets/synthetic-light.svg": {
+          "source": "shell/plugins/agents/assets/synthetic-light.svg",
+          "source_sha256": "d3dde35722107822e9adca4e1ac6fb6d6c74563b6035d52c378003400dc3215e",
+          "sha256": "d3dde35722107822e9adca4e1ac6fb6d6c74563b6035d52c378003400dc3215e",
+          "executable": false
+        },
+        "assets/synthetic.svg": {
+          "source": "shell/plugins/agents/assets/synthetic.svg",
+          "source_sha256": "597c2c9fd0774a3511c402b82ae87fb6037bdaee48e5abb9040f16f65f802bf2",
+          "sha256": "597c2c9fd0774a3511c402b82ae87fb6037bdaee48e5abb9040f16f65f802bf2",
+          "executable": false
+        },
+        "assets/vibe.svg": {
+          "source": "shell/plugins/agents/assets/vibe.svg",
+          "source_sha256": "7553e75f77ed2ddb86bbb368d3cc4b225f1ad11c5d145740088c6a8d21c0606c",
+          "sha256": "7553e75f77ed2ddb86bbb368d3cc4b225f1ad11c5d145740088c6a8d21c0606c",
+          "executable": false
+        },
+        "assets/zai-light.svg": {
+          "source": "shell/plugins/agents/assets/zai-light.svg",
+          "source_sha256": "a40379428926e7750b92aa0706cccfbf82bd82292a07aed67d7e2465c3d69096",
+          "sha256": "a40379428926e7750b92aa0706cccfbf82bd82292a07aed67d7e2465c3d69096",
+          "executable": false
+        },
+        "assets/zai.svg": {
+          "source": "shell/plugins/agents/assets/zai.svg",
+          "source_sha256": "d04be8624e2e7b853c3fc8bce9c051ef9123fb9c1793dc068bd49988b23fe807",
+          "sha256": "d04be8624e2e7b853c3fc8bce9c051ef9123fb9c1793dc068bd49988b23fe807",
+          "executable": false
+        },
+        "collectors.py": {
+          "source": "shell/plugins/agents/collectors.py",
+          "source_sha256": "6d46504c8cd4210f46c98e1288f1d5addbeaca63b52d7b43ec2e53db210bd9bf",
+          "sha256": "6d46504c8cd4210f46c98e1288f1d5addbeaca63b52d7b43ec2e53db210bd9bf",
+          "executable": false
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.agents/manifest.json",
+          "sha256": "cb55f72cf083ae1dd65a19cee8e9b266953916ce61ff9a9826f2376891fe447b",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "Panel.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "wifiqr": {
+      "id": "stark.wifiqr",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "Model.js": {
+          "source": "shell/plugins/panels/wifiqr/Model.js",
+          "source_sha256": "a5e771a51c034aaa84c46ebf3b6740eb58d5cbf0d14b3ae62dcf73a5f7bde1a1",
+          "sha256": "a5e771a51c034aaa84c46ebf3b6740eb58d5cbf0d14b3ae62dcf73a5f7bde1a1",
+          "executable": false
+        },
+        "Panel.qml": {
+          "source": "shell/plugins/panels/wifiqr/Panel.qml",
+          "source_sha256": "92da41453df61c4aff27119a15959743ddcc54fe87718c5c086320de97424f7b",
+          "sha256": "17f63f730051e8a0f26d8b7eff1fe688664727f7ca8cb5cb8644af15aebf3e2e",
+          "executable": false,
+          "patch": "patches/stark.wifiqr/Panel.qml.patch"
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.wifiqr/manifest.json",
+          "sha256": "82c4a40e817dbdded9105a6a17fe4cb0438aefddbdb6cc4ef145b1bffa7b8082",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/omacom/omarchy",
+        "release": "Omarchy package 4.5.0-3; plugin 1.0.0",
+        "license": "MIT",
+        "modified_files": [
+          "Panel.qml",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    },
+    "system-monitor": {
+      "id": "stark.system-monitor",
+      "dependencies": [
+        "island"
+      ],
+      "files": {
+        "LICENSE": {
+          "overlay": "overlays/stark.system-monitor/LICENSE",
+          "sha256": "74c2ef68b8defac05edd0bb6382228c76751a750fe5cb9757fca9efb07a1ae14",
+          "executable": false
+        },
+        "Metrics.js": {
+          "overlay": "overlays/stark.system-monitor/Metrics.js",
+          "sha256": "99046f1ef825bcff81544aff0c9d6eaa45d0fcbac650443bf723875d58d480b9",
+          "executable": false
+        },
+        "Metrics.qml": {
+          "overlay": "overlays/stark.system-monitor/Metrics.qml",
+          "sha256": "c1a5c5960623798884d5c8a014da4730871acdba80c8da6e0fea81a46d97d8f7",
+          "executable": false
+        },
+        "Panel.qml": {
+          "overlay": "overlays/stark.system-monitor/Panel.qml",
+          "sha256": "bf3c90e96f017f059bc18193615a780b08cbfbcc48bbd2e6a2256daf74d53c7a",
+          "executable": false
+        },
+        "Sparkline.qml": {
+          "overlay": "overlays/stark.system-monitor/Sparkline.qml",
+          "sha256": "d4c6bde60eda857221f34491d06bc0ef2a083cb7d014d348d85dea412eb64b59",
+          "executable": false
+        },
+        "discover-sensors.sh": {
+          "overlay": "overlays/stark.system-monitor/discover-sensors.sh",
+          "sha256": "237eb491dd046e3347699a7d2f1a0dd01de9abbc86cf4be08c2f1b20448d1e91",
+          "executable": true
+        },
+        "manifest.json": {
+          "overlay": "overlays/stark.system-monitor/manifest.json",
+          "sha256": "fead48bdef16b73f75868cafde53b366cf2c9fc4004f21bcc31e2f0cd63a9037",
+          "executable": false
+        }
+      },
+      "upstream": {
+        "repository": "https://github.com/Harshith292002/omarchy-system-monitor",
+        "release": "1.5.3",
+        "license": "MIT",
+        "modified_files": [
+          "LICENSE",
+          "Metrics.js",
+          "Metrics.qml",
+          "Panel.qml",
+          "Sparkline.qml",
+          "discover-sensors.sh",
+          "manifest.json"
+        ],
+        "purpose": "Theme-aware expanding island and shared native panel hosting",
+        "constraints": "Omarchy 4.5.x interfaces; exact per-file source hashes enforced"
+      }
+    }
+  }
+}
