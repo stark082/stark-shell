@@ -39,22 +39,34 @@ See [installation](docs/INSTALL.md) for the version gate and component dependenc
 
 ## Quick start
 
-Open a terminal in this repository:
+One-line install (run inside your logged-in Omarchy session):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/stark082/stark-shell/main/bootstrap.sh | bash -s -- --dry-run
+```
+
+This clones the repository into `~/.local/share/stark-shell`, previews, and
+validates without changing the desktop. When the preview looks right, install:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/stark082/stark-shell/main/bootstrap.sh | bash
+```
+
+The default install adds only the visualizer; it leaves the built-in bar
+operational. It adds a widget in `centerEnd`, beside the clock, without moving
+existing widgets. Re-running the one-liner updates the checkout and re-applies.
+
+Prefer a manual copy? Clone or download the repository, open a terminal in it, then:
 
 ```bash
 ./install.sh --dry-run
 ./install.sh
 ```
 
-The first command previews and validates. The second installs only the visualizer;
-it leaves the built-in bar operational. It adds a widget in `centerEnd`, beside the
-clock, without moving existing widgets.
-
 To opt into the island and launcher instead:
 
 ```bash
-./install.sh --dry-run --components island,launcher,calendar,visualizer
-./install.sh --components island,launcher,calendar,visualizer
+curl -fsSL https://raw.githubusercontent.com/stark082/stark-shell/main/bootstrap.sh | bash -s -- --components island,launcher,calendar,visualizer
 ```
 
 **Prototype users:** existing unmanaged `stark.*` folders are never overwritten or

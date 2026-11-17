@@ -19,9 +19,20 @@ Fonts require `fc-cache` only when selecting `--fonts`.
 
 ## Get the project
 
-Download the repository, or clone its published GitHub URL with `git clone`. This
-creates a working copy of the project; it does not change your desktop. Enter that
-folder with `cd stark-shell` before running the following commands.
+The fastest path is the one-line bootstrap, which clones a managed copy into
+`~/.local/share/stark-shell` and runs the installer with any arguments you pass:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/stark082/stark-shell/main/bootstrap.sh | bash -s -- --dry-run
+```
+
+`STARK_REPO`, `STARK_BRANCH`, and `STARK_SHARE` environment variables override the
+source URL, branch, and destination. Re-running the bootstrap fast-forwards the
+managed checkout and refuses to proceed if that copy has local changes.
+
+Alternatively, download the repository, or clone its published GitHub URL with
+`git clone`. This creates a working copy of the project; it does not change your
+desktop. Enter that folder with `cd stark-shell` before running the following commands.
 
 ```bash
 python3 tools/stark_manager.py doctor

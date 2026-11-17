@@ -2,6 +2,9 @@
 
 ## 0.1.0 — 2026-11-17
 
+- Add one-line bootstrap installer (`curl ... | bash`) that clones a managed
+  checkout into `~/.local/share/stark-shell` and runs the transactional installer,
+  with dry-run preview, environment overrides and dirty-checkout refusal.
 - Establish a version-controlled, user-scoped Stark Shell distribution.
 - Default to the native Omarchy bar with a standalone media visualizer.
 - Preserve the optional expanding island and 12 native/third-party panel integrations
