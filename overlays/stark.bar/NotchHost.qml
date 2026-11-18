@@ -63,7 +63,7 @@ Item {
 
 
     property real panelWidth: opened ? (page==="extra" ? (embeddedExtra?.embeddedWidth ?? 380)+40 : page==="audio" ? (embeddedAudio?.embeddedWidth ?? 380)+40 : page==="weather" ? (embeddedWeather?.embeddedWidth ?? 480)+40 : page==="calendar" ? (embeddedCalendar?.embeddedWidth ?? 560)+40 : page==="menu" ? Math.max(380,(embeddedMenu?.cardWidth ?? 300)+40) : closedWidth) : closedWidth
-    property real hang: opened ? Math.min((page==="extra"?(embeddedExtra?.embeddedHeight ?? 400)+16:page==="audio"?(embeddedAudio?.embeddedHeight ?? 400)+16:page==="weather"?(embeddedWeather?.embeddedHeight ?? 400)+16:page==="calendar"?(embeddedCalendar?.embeddedHeight ?? 400)+16:page==="menu"?(embeddedMenu?.cardHeight ?? 300)+16:notchDepth),height-stripHeight-24) : notchDepth
+    property real hang: opened ? Math.min((page==="extra"?(embeddedExtra?.embeddedHeight ?? 400)+16:page==="audio"?(embeddedAudio?.embeddedHeight ?? 400)+16:page==="weather"?(embeddedWeather?.embeddedHeight ?? 400)+16:page==="calendar"?(embeddedCalendar?.embeddedHeight ?? 400)+16:page==="menu"?(embeddedMenu?.cardHeight ?? 300)+16:notchDepth),height-stripHeight-24) : (bar.barHidden ? 0 : notchDepth)
     property real drawnWidth:panelWidth
     property real drawnHang:hang
     Behavior on drawnWidth { NumberAnimation { duration:Style.duration(host.opened?180:120);easing.type:Easing.OutCubic } }
@@ -73,11 +73,18 @@ Item {
     onOpenedChanged:{if(opened){forceActiveFocus();bar.requestPopout(host)}else{closeExtra();if(embeddedAudio?.opened)embeddedAudio.close();if(embeddedWeather?.opened)embeddedWeather.close();if(embeddedCalendar?.opened)embeddedCalendar.close();if(embeddedMenu?.opened)embeddedMenu.close();bar.releasePopout(host);page=""}}
     Keys.onEscapePressed: host.close()
     MouseArea { anchors.fill:parent;enabled:host.opened;onClicked:host.close() }
-    BarShape {
-        width:parent.width;height:host.stripHeight+host.drawnHang+1
-        barHeight:host.stripHeight;corner:0
-        backgroundColor:host.opened?host.bar.background:(host.bar.transparent?"transparent":host.bar.glassy?host.bar.glassBackground:host.bar.background)
-        drawers:[{center:width/2,width:host.drawnWidth,hang:host.drawnHang}]
+    Item {
+        // With the bar disabled, draw only the island attached to the screen edge.
+        x:(parent.width-width)/2
+        width:host.bar.barHidden ? Math.min(parent.width,host.drawnWidth+88+host.drawnHang*0.1) : parent.width
+        height:host.stripHeight+host.drawnHang+1
+        clip:true
+        BarShape {
+            x:-parent.x;width:host.width;height:parent.height
+            barHeight:host.stripHeight;corner:0
+            backgroundColor:host.opened?host.bar.background:(host.bar.transparent?"transparent":host.bar.glassy?host.bar.glassBackground:host.bar.background)
+            drawers:[{center:width/2,width:host.drawnWidth,hang:host.drawnHang}]
+        }
     }
     Item {
         id:hit

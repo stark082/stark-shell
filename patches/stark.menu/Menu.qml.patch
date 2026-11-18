@@ -1,6 +1,6 @@
 --- Menu.qml
 +++ Menu.qml
-@@ -6,9 +6,13 @@
+@@ -6,9 +6,21 @@
  import qs.Commons as Commons
  import qs.Ui
  import "MenuModel.js" as MenuModel
@@ -8,13 +8,21 @@
  
  Item {
    id: root
-+  readonly property bool embedded: Integration.Bridge.host !== null && Integration.Bridge.host.bar.position === "top"
++  readonly property bool embedded: Integration.Bridge.host !== null
++    && Integration.Bridge.host.bar.position === "top"
++    && Integration.Bridge.host.visible
++  onEmbeddedChanged: {
++    if (!root.opened || !Integration.Bridge.host) return
++    if (root.embedded) Integration.Bridge.host.openMenu(root)
++    else Integration.Bridge.host.menuClosed(root)
++    Qt.callLater(function() { if (root.opened) filterInput.forceActiveFocus() })
++  }
 +  readonly property int viewportWidth: embedded ? Integration.Bridge.host.width : panel.width
 +  readonly property int viewportHeight: embedded ? Integration.Bridge.host.height - Integration.Bridge.host.stripHeight - 24 : panel.height
  
    // Injected by omarchy-shell when this plugin is summoned.
    property string omarchyPath: Quickshell.env("OMARCHY_PATH")
-@@ -20,6 +24,8 @@
+@@ -20,6 +32,8 @@
    property string pendingInitialMenu: "root"
  
    function open(payloadJson) {
@@ -23,7 +31,7 @@
      var payload = ({})
      try { payload = JSON.parse(payloadJson || "{}") } catch (e) { payload = ({}) }
  
-@@ -107,7 +113,16 @@
+@@ -107,7 +121,16 @@
    readonly property var appLibrary: root.shell ? root.shell.appLibrary : null
    property bool deleteConfirmOpen: false
    property var deleteTarget: null
@@ -41,7 +49,7 @@
    // Bound to the central [menu] section in shell.toml via Commons.Color.qml.
    // Each color already includes its alpha companion (composed in the
    // singleton), so consumers can drop them straight into a Rectangle.
-@@ -135,11 +150,11 @@
+@@ -135,11 +158,11 @@
    property int dividerHeight: Style.space(17)
    property bool searchDivider: false
    property int layoutSerial: 0
@@ -56,7 +64,7 @@
  
    function finishRequest(selection) {
      if (!root.requestActive || !root.doneFile) {
-@@ -183,12 +198,12 @@
+@@ -183,12 +206,12 @@
    // derived from the card height, which this value feeds.
    function availableRowsHeight() {
      var top = panel.cardTop >= 0 ? panel.cardTop : Style.gapsOut
@@ -71,7 +79,7 @@
    }
  
    // When every row fits, the list gets its full height. When they don't,
-@@ -294,6 +309,10 @@
+@@ -294,6 +317,10 @@
    // when/checked answer, so re-running the guard batch would be pure waste.
    function rebuildItemsFromSources(skipGuards) {
      var translatedDefaults = MenuModel.applyTranslations(root.defaultMenuItems, root.menuCatalog)
@@ -82,7 +90,7 @@
      // The root row is injected by the merge (it has no JSONC entry), so its
      // "Go" label comes from the catalog's root entry; the merge only uses
      // it for the injected row, never over a user-supplied heading.
-@@ -1272,7 +1291,7 @@
+@@ -1272,7 +1299,7 @@
    }
    OverlayWindow {
      id: panel
@@ -91,7 +99,7 @@
      WlrLayershell.namespace: "omarchy-menu"
  
      // The card opens centered exactly as always. The first search keystroke
-@@ -1286,6 +1305,7 @@
+@@ -1286,6 +1313,7 @@
      readonly property int centeredTop: Math.max(Style.gapsOut, Math.round((height - root.cardHeight) / 2))
      readonly property int effectiveCardTop: cardTop >= 0 ? cardTop : centeredTop
      function freezeCardTop() {
@@ -99,7 +107,7 @@
        if (shown && cardTop < 0) {
          cardTop = effectiveCardTop
          maxRowsHeight = root.visibleRowsHeight
-@@ -1306,13 +1326,15 @@
+@@ -1306,13 +1334,15 @@
  
      BorderSurface {
        id: card

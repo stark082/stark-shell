@@ -51,7 +51,20 @@
  
      // While this window's widget or bar-move drag is live, the whole surface
      // takes input (mask below), so the pointer never leaves the bar surface
-@@ -1813,15 +1829,28 @@
+@@ -1747,8 +1763,11 @@
+     // stays on screen: not the strip, however thick a notch floor makes it,
+     // nor the clear rest that a drag takes input on.
+     readonly property real parkDistance: root.vertical ? implicitWidth : implicitHeight
++    // A summoned island stays on screen without revealing the disabled bar.
++    readonly property bool islandOnly: root.barHidden && root.position === "top"
++      && (notchHost.opened || notchHost.drawnHang > 0.5)
+     margins {
+-      top: root.barHidden && root.position === "top" ? -barWindow.parkDistance : 0
++      top: root.barHidden && root.position === "top" && !barWindow.islandOnly ? -barWindow.parkDistance : 0
+       bottom: root.barHidden && root.position === "bottom" ? -barWindow.parkDistance : 0
+       left: root.barHidden && root.position === "left" ? -barWindow.parkDistance : 0
+       right: root.barHidden && root.position === "right" ? -barWindow.parkDistance : 0
+@@ -1813,20 +1832,34 @@
      // every layer on the monitor back above whenever a window on any other
      // workspace leaves fullscreen, or the layer remaps. The invisible strip
      // would then take the clicks meant for the top of the fullscreen window.
@@ -72,7 +85,7 @@
 +    NotchHost {
 +      id:notchHost
 +      anchors.fill:parent
-+      bar:root;stripHeight:barWindow.thickness
++      bar:root;stripHeight:root.barHidden ? 0 : barWindow.thickness
 +      notchDepth:root.notchDepth
 +      screenName:barWindow.screen ? barWindow.screen.name : ""
 +      visible:root.position === "top" && !barWindow.underFullscreen
@@ -81,7 +94,13 @@
      }
  
      // The bar itself, along its screen edge.
-@@ -1835,6 +1864,7 @@
+     Item {
+       id: barStrip
++      visible: !root.barHidden
+ 
+       x: root.position === "right" ? parent.width - barWindow.thickness : 0
+       y: root.position === "bottom" ? parent.height - barWindow.thickness : 0
+@@ -1835,6 +1868,7 @@
  
        Rectangle {
          anchors.fill: parent
@@ -89,7 +108,7 @@
          color: root.transparent ? "transparent" : (root.glassy ? root.glassBackground : root.background)
        }
  
-@@ -2361,7 +2391,8 @@
+@@ -2361,7 +2395,8 @@
        pool: sections.pool
        active: sections.active
        fixedEdge: sections.besideRight ? "end" : "center"

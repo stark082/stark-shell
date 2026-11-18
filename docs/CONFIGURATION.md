@@ -101,3 +101,15 @@ The island's existing Style binding can also affect widgets sharing Quickshell's
 Style singleton while the island is active. Terminal settings and global fontconfig
 aliases are untouched. Uninstall restores the recorded prior font setting when it
 has not been edited and removes only font files installed by Stark itself.
+
+## Hidden bar and temporary island
+
+The standard Super+Shift+Space bar toggle remains unchanged. When the bar is
+hidden, summoning the menu temporarily reveals only the central island at the
+screen edge. Clock, workspace and other bar widgets stay hidden. Closing the
+menu retracts the island fully and preserves the `bar-off` toggle. A non-top or
+otherwise unavailable host falls back to the native standalone menu.
+
+Island shoulders and lower corners follow Omarchy's global window rounding:
+rounded windows use rounded joins; square windows use sharp joins. The slope
+angle and straight outer ends of the full-width bar remain unchanged.

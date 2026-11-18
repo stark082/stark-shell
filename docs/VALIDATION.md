@@ -61,3 +61,12 @@ manifest validation do not prove service behavior or graphical runtime correctne
 9. Introduce a managed-file edit and verify conflict retention; resolve it.
 10. Preview/uninstall and verify restoration of the prior bar, layout and shortcuts.
 11. Record versions, logs and release screenshots before promoting the island default.
+
+## Targeted follow-up — 2026-11-18
+
+With `bar-off` enabled, the live prototype's menu was summoned into a temporary
+top-center island. The bar widgets remained hidden; closing the menu reduced the
+island's target depth to zero and preserved the hidden-bar flag. The corresponding
+packaged island and launcher rebuilt and passed native validation and QML parsing.
+This targeted check does not replace the full clean-account release acceptance
+matrix above.

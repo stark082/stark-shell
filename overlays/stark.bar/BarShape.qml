@@ -9,11 +9,11 @@ Shape {
     property real barHeight: 26
     property real corner: 0
     property real shoulder: 16
-    property real radius: 24
+    property real radius: Commons.Style.cornerRadius > 0 ? 24 : 0
     property var drawers: []
     property color backgroundColor: "transparent"
     property string style: "slant"
-    property bool square: false
+    property bool square: Commons.Style.cornerRadius <= 0
     property real notchCorner: 4
 
     preferredRendererType: Shape.CurveRenderer

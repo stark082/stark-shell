@@ -34,4 +34,6 @@
   backup journals, ownership hashes, conflict handling and interruption recovery.
 - Add optional fonts and isolated Lua animation settings.
 - Exclude the removed control center and defer dock redesign.
+- Summon a temporary top-center island while the bar is hidden; retract it without revealing bar widgets.
+- Match island shoulder/lower-corner rounding to Omarchy window rounding.
 - Document the runtime acceptance work still required for the packaged release.
