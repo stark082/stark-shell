@@ -97,7 +97,7 @@
         "Bar.qml": {
           "source": "shell/plugins/bar/Bar.qml",
           "source_sha256": "865998cec3114a395e130e1ff16f92486c3fad8da59400035b95c11522c2b235",
-          "sha256": "4703e5b18d37f18e3d93611e983ba6a682b122c31d353ad860723222247e8308",
+          "sha256": "209a71e33ebf1575fa38f9a58973998794ee91238d82dceb1e0e200b3b28c131",
           "executable": false,
           "patch": "patches/stark.bar/Bar.qml.patch"
         },
@@ -114,7 +114,7 @@
         },
         "NotchHost.qml": {
           "overlay": "overlays/stark.bar/NotchHost.qml",
-          "sha256": "668a25ed2505f7822e513e1c8cae439ec37d5c21e9a921f1954b5b4165dfc29f",
+          "sha256": "e1dae4dd8e7a99a7fef4806b638e563d0c65da4bb43988173092fb7d017f05c8",
           "executable": false
         },
         "Slant.js": {
@@ -352,7 +352,7 @@
         "Menu.qml": {
           "source": "shell/plugins/menu/Menu.qml",
           "source_sha256": "f76b25be69e80fbb139d29ca8e4bca8a98078f559d203750c3ced0f86f6d5f21",
-          "sha256": "90cc18918824ca1aa6edc306ed18104d1f4930862f4c1203b897f546ca98c3d1",
+          "sha256": "f92baf2660c9214fff143001f5cc75b1e37f3e9a7008312a173cb0bfc32eb9ca",
           "executable": false,
           "patch": "patches/stark.menu/Menu.qml.patch"
         },

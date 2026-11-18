@@ -18,7 +18,7 @@
 +    Qt.callLater(function() { if (root.opened) filterInput.forceActiveFocus() })
 +  }
 +  readonly property int viewportWidth: embedded ? Integration.Bridge.host.width : panel.width
-+  readonly property int viewportHeight: embedded ? Integration.Bridge.host.height - Integration.Bridge.host.stripHeight - 24 : panel.height
++  readonly property int viewportHeight: embedded ? Integration.Bridge.host.height - Integration.Bridge.host.layoutStripHeight - 24 : panel.height
  
    // Injected by omarchy-shell when this plugin is summoned.
    property string omarchyPath: Quickshell.env("OMARCHY_PATH")

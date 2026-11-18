@@ -70,3 +70,8 @@ island's target depth to zero and preserved the hidden-bar flag. The correspondi
 packaged island and launcher rebuilt and passed native validation and QML parsing.
 This targeted check does not replace the full clean-account release acceptance
 matrix above.
+
+The menu-height follow-up was measured in both states: 380 px width and 544 px
+expanded depth with the bar enabled and disabled. The initial enabled-bar state
+was restored after testing. The menu uses the same layout height budget while
+the hidden-bar island still draws from the screen edge.

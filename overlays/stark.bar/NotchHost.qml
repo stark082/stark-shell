@@ -6,6 +6,7 @@ Item {
     id:host
     required property var bar
     property real stripHeight:26
+    property real layoutStripHeight:stripHeight
     property real notchDepth:11
     property real closedWidth:186
     property bool opened:false

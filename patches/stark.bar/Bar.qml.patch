@@ -64,7 +64,7 @@
        bottom: root.barHidden && root.position === "bottom" ? -barWindow.parkDistance : 0
        left: root.barHidden && root.position === "left" ? -barWindow.parkDistance : 0
        right: root.barHidden && root.position === "right" ? -barWindow.parkDistance : 0
-@@ -1813,20 +1832,34 @@
+@@ -1813,20 +1832,35 @@
      // every layer on the monitor back above whenever a window on any other
      // workspace leaves fullscreen, or the layer remaps. The invisible strip
      // would then take the clicks meant for the top of the fullscreen window.
@@ -86,6 +86,7 @@
 +      id:notchHost
 +      anchors.fill:parent
 +      bar:root;stripHeight:root.barHidden ? 0 : barWindow.thickness
++      layoutStripHeight:barWindow.thickness
 +      notchDepth:root.notchDepth
 +      screenName:barWindow.screen ? barWindow.screen.name : ""
 +      visible:root.position === "top" && !barWindow.underFullscreen
@@ -100,7 +101,7 @@
  
        x: root.position === "right" ? parent.width - barWindow.thickness : 0
        y: root.position === "bottom" ? parent.height - barWindow.thickness : 0
-@@ -1835,6 +1868,7 @@
+@@ -1835,6 +1869,7 @@
  
        Rectangle {
          anchors.fill: parent
@@ -108,7 +109,7 @@
          color: root.transparent ? "transparent" : (root.glassy ? root.glassBackground : root.background)
        }
  
-@@ -2361,7 +2395,8 @@
+@@ -2361,7 +2396,8 @@
        pool: sections.pool
        active: sections.active
        fixedEdge: sections.besideRight ? "end" : "center"
